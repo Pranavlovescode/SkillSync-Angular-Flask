@@ -1,0 +1,147 @@
+<app-navbar></app-navbar>
+<div class="min-h-screen bg-base-200 container">
+    <!-- Cover Photo and Profile Info -->
+    <div class="relative container mx-auto px-4">
+      <div class="h-48 md:h-72 bg-gradient-to-r from-primary to-secondary"></div>
+      <div class="container mx-auto px-4">
+        <div class="relative -mt-20 sm:-mt-24">
+          <div class="flex flex-col sm:flex-row items-center gap-4">
+            <!-- Avatar -->
+            <div class="avatar">
+              <div class="w-32 h-32 sm:w-40 sm:h-40 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                <img [src]="profile.avatarUrl" alt="Profile picture" />
+              </div>
+            </div>
+            
+            <!-- Basic Info -->
+            <div class="text-center sm:text-left flex-1">
+              <h1 class="text-2xl sm:text-3xl font-bold">{{profile.name}}</h1>
+              <p class="text-base-content/60">{{profile.username}}</p>
+              <p class="mt-2 text-sm sm:text-base">{{profile.bio}}</p>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="flex gap-2 md:mt-24">
+              <button class="btn btn-primary">Follow</button>
+              <button class="btn btn-outline">Message</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-8">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Left Column -->
+        <div class="lg:col-span-1 space-y-6">
+          <!-- User Details Card -->
+          <div class="card bg-neutral shadow-xl">
+            <div class="card-body">
+              <h2 class="card-title">Details</h2>
+              <div class="space-y-3">
+                <div class="flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-base-content/60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  <span>{{profile.location}}</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-base-content/60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                  </svg>
+                  <a [href]="profile.website" target="_blank" class="link link-primary">{{profile.website}}</a>
+                </div>
+                <div class="flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-base-content/60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  <span>Joined {{formatDate(profile.joinDate)}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+  
+          <!-- Stats Card -->
+          <div class="card bg-neutral shadow-xl">
+            <div class="card-body">
+              <h2 class="card-title">Stats</h2>
+              <div class="stats stats-vertical bg-neutral" >
+                <div class="stat ">
+                  <div class="stat-title">Posts</div>
+                  <div class="stat-value">{{profile.stats.posts}}</div>
+                </div>
+                <div class="stat">
+                  <div class="stat-title">Followers</div>
+                  <div class="stat-value">{{profile.stats.followers}}</div>
+                </div>
+                <div class="stat">
+                  <div class="stat-title">Following</div>
+                  <div class="stat-value">{{profile.stats.following}}</div>
+                </div>
+                <div class="stat">
+                  <div class="stat-title">Total Likes</div>
+                  <div class="stat-value">{{profile.stats.totalLikes}}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <!-- Right Column -->
+        <div class="lg:col-span-2 space-y-6">
+          <!-- Skills Card -->
+          <div class="card bg-neutral shadow-xl">
+            <div class="card-body">
+              <h2 class="card-title">Skills & Expertise</h2>
+              <div class="space-y-4">
+                <div *ngFor="let skill of profile.skills" class="space-y-2">
+                  <div class="flex items-center justify-between">
+                    <span class="font-medium">{{skill.name}}</span>
+                    <button class="btn btn-sm btn-ghost gap-2" (click)="endorseSkill(skill)">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
+                      </svg>
+                      {{skill.endorsements}}
+                    </button>
+                  </div>
+                  <progress class="progress progress-primary w-full" [value]="skill.level" max="5"></progress>
+                </div>
+              </div>
+            </div>
+          </div>
+  
+          <!-- Recent Posts -->
+          <div class="card bg-neutral shadow-xl">
+            <div class="card-body">
+              <div class="flex items-center justify-between">
+                <h2 class="card-title">Recent Posts</h2>
+                <button routerLink="/create-post" class="btn bg-base-200 btn-sm">Create Post</button>
+              </div>
+              <div class="space-y-4">
+                <div *ngFor="let post of profile.recentPosts" class="border-b last:border-0 pb-4 last:pb-0">
+                  <p class="mb-2">{{post.content}}</p>
+                  <div class="flex items-center justify-between">
+                    <div class="flex gap-2">
+                      <div *ngFor="let tag of post.tags" class="badge badge-primary">{{tag}}</div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                      <span class="text-sm text-base-content/60">{{formatDate(post.date)}}</span>
+                      <div class="flex items-center gap-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                        </svg>
+                        <span>{{post.likes}}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
