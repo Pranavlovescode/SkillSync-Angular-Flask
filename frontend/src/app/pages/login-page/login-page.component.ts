@@ -19,6 +19,7 @@ declare const _NGX_ENV_: any;
 export class LoginPageComponent {
   loginForm: FormGroup;
   isLoading = false;
+  showSuccessAlert:boolean= false;
   // configService = Inject(ConfigService);
   apiUrl: string = environment.base_url; // Fallback if .env not loaded
   
@@ -56,9 +57,14 @@ export class LoginPageComponent {
           headers:{
             'Content-Type':'application/json'
           },
+          withCredentials:true
         }).subscribe((res)=>{
           console.log("Login response",res);
           this.isLoading = false;
+          this.showSuccessAlert = true;
+          setTimeout(() => {
+            this.showSuccessAlert = false;
+          }, 3000);
           // Navigate to home page or dashboard after successful login
           this.router.navigate(['/home']);
         },(err)=>{

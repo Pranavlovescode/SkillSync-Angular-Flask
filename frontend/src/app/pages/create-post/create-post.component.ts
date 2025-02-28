@@ -11,7 +11,7 @@ declare const _NGX_ENV_: any;
 
 @Component({
   selector: 'app-create-post',
-  imports: [NgIf,NgFor,ReactiveFormsModule,NavbarComponent],
+  imports: [ReactiveFormsModule,NavbarComponent],
   templateUrl: './create-post.component.html',
   styleUrl: './create-post.component.css'
 })
@@ -21,6 +21,8 @@ export class CreatePostComponent implements OnInit{
   imagePreview: string | ArrayBuffer | null = null;
   videoPreview: string | null = null;
   apiUrl:string=environment.base_url; // Fallback if .env not loaded
+  _isLoading: boolean = false;
+  showSuccessAlert: boolean = false;
 
 
   constructor(private fb: FormBuilder, private http:HttpClient) {
@@ -37,6 +39,7 @@ export class CreatePostComponent implements OnInit{
 
   onSubmit() {
     if (this.postForm.valid) {
+      this._isLoading = true;
       const formData = new FormData();
   
       formData.append('title', this.postForm.get('title')?.value || '');
@@ -58,12 +61,23 @@ export class CreatePostComponent implements OnInit{
         console.log(`Formdata: ${key}:`, value);
       });
   
-      this.http.post(`${this.apiUrl}/skillpost/create`, formData).subscribe(
+      this.http.post(`${this.apiUrl}/skillpost/create`, formData,{
+        withCredentials: true
+      }).subscribe(
         (res) => {
           console.log("Post response", res);
+          this._isLoading = false;
+          this.showSuccessAlert= true;
+          setTimeout(()=>{
+            this.showSuccessAlert = false;
+          }, 5000);
         },
         (err) => {
           console.log("Error while posting", err);
+          setTimeout(()=>{
+            this._isLoading = false;
+
+          }, 5000);
         }
       );
   

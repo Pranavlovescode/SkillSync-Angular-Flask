@@ -1,63 +1,71 @@
 <app-navbar></app-navbar>
 <div class="container mx-auto p-4 max-w-3xl">
-    <div class="card shadow-xl bg-neutral">
-      <div class="card-body">
-        <h2 class="card-title mb-4">Create a New Post</h2>
-        
-        <form [formGroup]="postForm" (ngSubmit)="onSubmit()" class="space-y-4">
-          <!-- Content Input -->
-          <div class="form-control">
-            <input type="text" formControlName="title" class="input input-bordered" placeholder="Title">
-            <label class="label">
-              @if (postForm.get('title')?.hasError('required') && postForm.get('title')?.touched) {
-                <span class="label-text-alt text-error">
-                  Title is required.
-                </span>
-              }
-            </label>
-          </div>
+  <!-- Success Alert -->
+  @if (showSuccessAlert) {
+    <div class="alert alert-success mb-4">
+      <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+      <span>Your post has been created successfully!</span>
+    </div>
+  }
 
-          <div class="form-control">
-            <textarea 
-              formControlName="description" 
-              class="textarea textarea-bordered h-24" 
-              placeholder="What's on your mind?"
-            ></textarea>
-            <label class="label">
-              @if (postForm.get('content')?.hasError('required') && postForm.get('description')?.touched) {
-                <span class="label-text-alt text-error">
-                  Content is required.
-                </span>
-              }
-              @if (postForm.get('description')?.hasError('maxlength')) {
-                
-                <span class="label-text-alt text-error">
-                  Content must be less than 500 characters.
-                </span>
-              }              
-            </label>
+  <div class="card shadow-xl bg-neutral">
+    <div class="card-body">
+      <h2 class="card-title mb-4">Create a New Post</h2>
+      
+      <form [formGroup]="postForm" (ngSubmit)="onSubmit()" class="space-y-4">
+        <!-- Content Input -->
+        <div class="form-control">
+          <input type="text" formControlName="title" class="input input-bordered" placeholder="Title">
+          <label class="label">
+            @if (postForm.get('title')?.hasError('required') && postForm.get('title')?.touched) {
+              <span class="label-text-alt text-error">
+                Title is required.
+              </span>
+            }
+          </label>
+        </div>
+
+        <div class="form-control">
+          <textarea 
+            formControlName="description" 
+            class="textarea textarea-bordered h-24" 
+            placeholder="What's on your mind?"
+          ></textarea>
+          <label class="label">
+            @if (postForm.get('description')?.hasError('required') && postForm.get('description')?.touched) {
+              <span class="label-text-alt text-error">
+                Content is required.
+              </span>
+            }
+            @if (postForm.get('description')?.hasError('maxlength')) {
+              <span class="label-text-alt text-error">
+                Content must be less than 500 characters.
+              </span>
+            }              
+          </label>
+        </div>
+
+        <!-- Tags Input -->
+        <div class="form-control">
+          <div class="input-group">
+            <input 
+              type="text" 
+              formControlName="tag" 
+              placeholder="Add a tag" 
+              class="input input-bordered flex-grow"
+            >
+            <button type="button" class="btn btn-square" (click)="addTag()">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+              </svg>
+            </button>
           </div>
-  
-          <!-- Tags Input -->
-          <div class="form-control">
-            <div class="input-group">
-              <input 
-                type="text" 
-                formControlName="tag" 
-                placeholder="Add a tag" 
-                class="input input-bordered flex-grow"
-              >
-              <button type="button" class="btn btn-square" (click)="addTag()">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                </svg>
-              </button>
-            </div>
-          </div>
-  
-          <!-- Tags Display -->
-          <div class="flex flex-wrap gap-2">
-            <div *ngFor="let tag of tags" class="badge badge-primary gap-2">
+        </div>
+
+        <!-- Tags Display -->
+        <div class="flex flex-wrap gap-2">
+          @for (tag of tags; track tag) {
+            <div class="badge badge-primary gap-2">
               {{tag}}
               <button type="button" class="btn btn-ghost btn-xs" (click)="removeTag(tag)">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -65,51 +73,62 @@
                 </svg>
               </button>
             </div>
-          </div>
-  
-          <!-- Image Upload -->
-          <div class="form-control">
-            <label class="label">
-              <span class="label-text">Upload an Image</span>
-            </label>
-            <input 
-              type="file" 
-              (change)="onImageSelected($event)" 
-              accept="image/*" 
-              class="file-input file-input-bordered w-full"
-            >
-          </div>
-  
-          <!-- Image Preview -->
-          <div *ngIf="imagePreview" class="mt-4">
+          }
+        </div>
+
+        <!-- Image Upload -->
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">Upload an Image</span>
+          </label>
+          <input 
+            type="file" 
+            (change)="onImageSelected($event)" 
+            accept="image/*" 
+            class="file-input file-input-bordered w-full"
+          >
+        </div>
+
+        <!-- Image Preview -->
+        @if (imagePreview) {
+          <div class="mt-4">
             <img [src]="imagePreview" alt="Image preview" class="max-w-full h-auto rounded-lg shadow-lg">
             <button type="button" class="btn btn-sm btn-error mt-2" (click)="removeImage()">Remove Image</button>
           </div>
-  
-          <!-- Video Upload -->
-          <div class="form-control">
-            <label class="label">
-              <span class="label-text">Upload a Video</span>
-            </label>
-            <input 
-              type="file" 
-              (change)="onVideoSelected($event)" 
-              accept="video/*" 
-              class="file-input file-input-bordered w-full"
-            >
-          </div>
-  
-          <!-- Video Preview -->
-          <div *ngIf="videoPreview" class="mt-4">
+        }
+
+        <!-- Video Upload -->
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">Upload a Video</span>
+          </label>
+          <input 
+            type="file" 
+            (change)="onVideoSelected($event)" 
+            accept="video/*" 
+            class="file-input file-input-bordered w-full"
+          >
+        </div>
+
+        <!-- Video Preview -->
+        @if (videoPreview) {
+          <div class="mt-4">
             <video [src]="videoPreview" controls class="max-w-full h-auto rounded-lg shadow-lg"></video>
             <button type="button" class="btn btn-sm btn-error mt-2" (click)="removeVideo()">Remove Video</button>
           </div>
-  
-          <!-- Submit Button -->
-          <div class="form-control mt-6">
-            <button type="submit" class="btn btn-primary" [disabled]="!postForm.valid">Create Post</button>
-          </div>
-        </form>
-      </div>
+        }
+
+        <!-- Submit Button -->
+        <div class="form-control mt-6">
+          <button type="submit" class="btn btn-primary" [disabled]="!postForm.valid || _isLoading">
+            @if (!_isLoading) {
+              <span>Create Post</span>
+            } @else {
+              <span class="loading loading-spinner loading-sm"></span>
+            }
+          </button>
+        </div>
+      </form>
     </div>
   </div>
+</div>
