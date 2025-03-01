@@ -2,12 +2,15 @@ from flask import Blueprint,session,make_response,Response
 from flask import request, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 from db import user_collection
+from bson import ObjectId
+from bson.json_util import dumps
 
 auth = Blueprint('auth', __name__)
 
 @auth.route('/signup',methods=["POST"])
 def signup():
-    data = request.json()
+    data = request.get_json()
+    user = user_collection.find_one({"email": data['email']})
     print(user)
     if user:
         return jsonify({"message":"User already exists"}),400
@@ -47,6 +50,17 @@ def logout():
     else:
         return make_response(jsonify({"message":"User not logged in"}),400)
     
+
+
+@auth.route('/get-user/<id>',methods=["GET"])
+def get_user(id):
+    user = user_collection.find_one({"_id": ObjectId(id)})
+    print(user)
+    if not user:
+        return make_response(jsonify({"message":"User not found"}),404)
+    return make_response(dumps(user),200)
+
+
 @auth.route('/debug-session', methods=["GET"])
 def debug_session():
     user = session.get('user')
