@@ -44,9 +44,7 @@ export class CreatePostComponent implements OnInit{
   
       formData.append('title', this.postForm.get('title')?.value || '');
       formData.append('description', this.postForm.get('description')?.value || ''); // Fixed here
-      this.tags.forEach(tag => {
-        formData.append('tags', tag);
-      });
+      this.tags.forEach(tag => formData.append("tags", tag));
       const imageFile = this.postForm.get('image')?.value;
       if (imageFile instanceof File) {
         formData.append('image', imageFile);

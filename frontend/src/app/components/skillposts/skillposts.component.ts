@@ -31,9 +31,19 @@ interface SkillPost {
 export class SkillpostsComponent {
 
   apiUrl:string=environment.base_url; // Fallback if .env not loaded
+  JSON: JSON = JSON;
   constructor(private http: HttpClient) {
     this.fetchAllPosts();
   }
+
+  // ngOnInit() {
+  //   // Ensure tags are parsed properly before binding
+  //   this.skillPost.map((post)=>{
+  //     post.tags= typeof post.tags === 'string' ? JSON.parse(post.tags) : post.tags;
+  //   }) 
+  // }
+
+
   skillPost:SkillPost[]=[];
   fetchAllPosts(){
     this.http.get(`${this.apiUrl}/skillpost/get-all`,{
@@ -45,6 +55,7 @@ export class SkillpostsComponent {
       console.log("Error while fetching posts",err);
     })
   }
+
 
   readonly Heart = Heart;
   currentUser = {

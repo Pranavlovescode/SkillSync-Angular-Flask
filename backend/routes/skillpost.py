@@ -75,7 +75,7 @@ def delete_skillpost(id):
     }), 200)
 
 
-@skillpost.route('/update/<id>', methods=["PUT"])
+@skillpost.route('/update/<id>', methods=["PATCH"])
 def update_skillpost(id):
     if not session.get('user'):
         print("User not logged in")
@@ -102,7 +102,7 @@ def update_skillpost(id):
     skill_data = {
         "title": request.form.get('title', '').strip(),
         "description": request.form.get('description', '').strip(),
-        "tags": request.form.get('tags', '').split(',') if request.form.get('tags') else [],
+        "tags": request.form.getlist('tags'),
         "image": image_url,
         "video": video_url,
         "likes":0,
@@ -125,6 +125,7 @@ def create_skillpost():
 
     print("Request files:", request.files)
     print("Request form data:", request.form)
+    print("Request data:", request.form.getlist('tags'))
 
     # Handling file uploads safely
     image = request.files.get('image')
@@ -149,11 +150,13 @@ def create_skillpost():
         "title": request.form.get('title', '').strip(),
         "description": request.form.get('description', '').strip(),
         "user": current_user["_id"],  # Convert ObjectId to string
-        "tags": request.form.get('tags', '').split(',') if request.form.get('tags') else [],
+        "tags": request.form.getlist('tags'),
         "created_at": datetime.datetime.now(),
         "is_deleted": False,
         "image": image_url,
-        "video": video_url
+        "video": video_url,
+        "comments": [],
+        "likes": 0,
     }
 
     skillpost_collection.insert_one(skill_data)

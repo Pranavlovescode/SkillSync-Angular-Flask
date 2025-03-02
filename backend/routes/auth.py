@@ -4,6 +4,17 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from db import user_collection
 from bson import ObjectId
 from bson.json_util import dumps
+import cloudinary.uploader
+import cloudinary
+import os
+
+# Cloudinary Configuration
+cloudinary.config(
+    cloud_name=os.getenv('CLOUDINARY_CLOUD_NAME'),
+    api_key=os.getenv('CLOUDINARY_API_KEY'),
+    api_secret=os.getenv('CLOUDINARY_API_SECRET')
+)
+
 
 auth = Blueprint('auth', __name__)
 
@@ -15,6 +26,8 @@ def signup():
     if user:
         return jsonify({"message":"User already exists"}),400
     
+    
+
     hashed_password = generate_password_hash(data['password'])
     user = user_collection.insert_one({
         "email":data['email'],
@@ -22,7 +35,9 @@ def signup():
         "first_name":data['first_name'],
         "last_name":data['last_name'],
         "username":data['username'],
-        "is_email_verified":False   
+        "is_email_verified":False,  
+        "profile_picture":"",
+        "bio":"",
     })
     session['user'] = user.email
     return make_response(jsonify({"message":"User created successfully"}),201)
@@ -59,6 +74,30 @@ def get_user(id):
     if not user:
         return make_response(jsonify({"message":"User not found"}),404)
     return make_response(dumps(user),200)
+
+
+@auth.route('/update-profile',methods=["PATCH"])
+def update_profile():
+    if not session.get('user'):
+        return make_response(jsonify({"message":"User not logged in"}),401)
+    else:
+        data = request.form
+        user = user_collection.find_one({"email":session['user']})
+        if not user:
+            return make_response(jsonify({"message":"User not found"}),404)
+        print(user["_id"])
+        image_url = cloudinary.uploader.upload(data['profile_picture'],folder="SkillSync/user_profile")['secure_url']
+        user_data = {
+            "first_name":data['first_name'],
+            "last_name":data['last_name'],
+            "username":data['username'],
+            "profile_picture":image_url,
+            "bio":data['bio']
+        }
+        user_collection.update_one(
+            {"_id":ObjectId(user["_id"])},
+            {"$set":user_data})
+        return make_response(jsonify({"message":"Profile updated successfully"}),200)
 
 
 @auth.route('/debug-session', methods=["GET"])
