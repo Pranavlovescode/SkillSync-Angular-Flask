@@ -8,6 +8,7 @@ import os
 from flask_cors import CORS
 from flask_session import Session
 from db import mongo_client as client
+from datetime import timedelta
 
 # Load environment variables from .env
 load_dotenv()
@@ -18,14 +19,17 @@ app.config.from_object(Config)
 CORS(app,supports_credentials=True,origins=os.getenv('ORIGIN'))
 
 app.config["SESSION_TYPE"] = "mongodb"
-app.config["SESSION_PERMANENT"] = False
-app.config["SESSION_USE_SIGNER"] = True  # Prevents tampering
+app.config["SESSION_PERMANENT"] = True
+app.config["SESSION_USE_SIGNER"] = True
 app.config["SESSION_MONGODB"] = client
-app.config["SESSION_MONGODB_DB"] = "skill_sync_sessions"  # Database
-app.config["SESSION_MONGODB_COLLECTION"] = "sessions"  # Collection
-app.config["SESSION_COOKIE_SAMESITE"] = "None"  # Needed for cross-origin cookies
-app.config["SESSION_COOKIE_SECURE"] = True  # Set to True in production with HTTPS
-app.config["SESSION_COOKIE_HTTPONLY"] = True  # Prevents JavaScript access
+app.config["SESSION_MONGODB_DB"] = "skill_sync_sessions"
+app.config["SESSION_MONGODB_COLLECTION"] = "sessions"
+app.config["SESSION_COOKIE_SAMESITE"] = "None"
+app.config["SESSION_COOKIE_SECURE"] = True
+app.config["SESSION_COOKIE_HTTPONLY"] = False
+app.config["SESSION_COOKIE_EXPIRES"] = timedelta(days=7)  # This alone is NOT enough
+app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=7)
+
 
 Session(app)
 # mongo_uri = os.getenv("MONGO_URI")

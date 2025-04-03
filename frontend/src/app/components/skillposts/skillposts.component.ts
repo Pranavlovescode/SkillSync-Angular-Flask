@@ -24,7 +24,7 @@ interface SkillPost {
 
 @Component({
   selector: 'app-skillposts',
-  imports: [NgFor,LucideAngularModule,NavbarComponent],
+  imports: [NgFor,LucideAngularModule,NavbarComponent,],
   templateUrl: './skillposts.component.html',
   styleUrl: './skillposts.component.css'
 })
@@ -36,12 +36,12 @@ export class SkillpostsComponent {
     this.fetchAllPosts();
   }
 
-  // ngOnInit() {
-  //   // Ensure tags are parsed properly before binding
-  //   this.skillPost.map((post)=>{
-  //     post.tags= typeof post.tags === 'string' ? JSON.parse(post.tags) : post.tags;
-  //   }) 
-  // }
+  ngOnInit() {
+    // Ensure tags are parsed properly before binding
+    console.log("Cookie ",document.cookie);
+  }
+
+
 
 
   skillPost:SkillPost[]=[];

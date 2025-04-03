@@ -75,6 +75,17 @@ def get_user(id):
         return make_response(jsonify({"message":"User not found"}),404)
     return make_response(dumps(user),200)
 
+@auth.route('/get-profile',methods=["GET"])
+def get_user_profile():
+    user = session.get('user')
+    if not user:
+        return make_response(jsonify({"message":"User not logged in"}),401)
+    else:
+        user = user_collection.find_one({"email":user})
+        if not user:
+            return make_response(jsonify({"message":"User not found"}),404)
+        return make_response(dumps(user),200)
+
 
 @auth.route('/update-profile',methods=["PATCH"])
 def update_profile():

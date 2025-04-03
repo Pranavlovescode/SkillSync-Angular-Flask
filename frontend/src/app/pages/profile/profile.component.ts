@@ -1,11 +1,14 @@
-import { NgFor, NgForOf } from '@angular/common';
+import { NgFor, NgForOf, ɵparseCookieValue } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { Linkedin } from 'lucide-angular';
+import { Cookie, Linkedin, LucideAngularModule, Pen } from 'lucide-angular';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
+import { environment } from '../../../environments/environment.development';
+import { HttpClient } from '@angular/common/http';
 
 interface UserProfile {
-  name: string;
+  first_name: string;
+  last_name: string;
   username: string;
   avatarUrl: string;
   coverUrl: string;
@@ -41,13 +44,33 @@ interface Post {
 
 @Component({
   selector: 'app-profile',
-  imports: [NgFor, NgForOf,RouterLink,NavbarComponent],
+  imports: [NgFor, NgForOf, RouterLink, NavbarComponent, LucideAngularModule],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css',
 })
 export class ProfileComponent {
+  readonly Pen = Pen;
+  apiUrl: string = environment.base_url;
+  JSON: JSON = JSON;
+  constructor(private http: HttpClient) {}
+  ngOnInit() {
+    this.fetchProfile();
+  }
+
+  fetchProfile() {
+    this.http.get(`${this.apiUrl}/auth/get-profile`, {
+      withCredentials: true,
+    }).subscribe((res) => {
+      console.log('The response is ', res);
+      this.profile = res as UserProfile;
+    }, (err) => {
+      console.log('Error while fetching profile', err);
+    });
+  }
+
   profile: UserProfile = {
-    name: 'John Doe',
+    first_name: 'John',
+    last_name: 'Doe',
     username: 'john_doe',
     avatarUrl:
       'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-oIqv4QIhiQKMTOM1vVBpBsZ04Bwclx.png',

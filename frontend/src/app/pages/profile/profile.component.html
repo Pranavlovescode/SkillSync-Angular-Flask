@@ -1,11 +1,11 @@
 <app-navbar></app-navbar>
-<div class="min-h-screen bg-base-200 container">
+<div class="min-h-screen bg-base-200">
     <!-- Cover Photo and Profile Info -->
     <div class="relative container mx-auto px-4">
       <div class="h-48 md:h-72 bg-gradient-to-r from-primary to-secondary"></div>
       <div class="container mx-auto px-4">
         <div class="relative -mt-20 sm:-mt-24">
-          <div class="flex flex-col sm:flex-row items-center gap-4">
+          <div class="flex flex-col sm:flex-row items-center gap-6">
             <!-- Avatar -->
             <div class="avatar">
               <div class="w-32 h-32 sm:w-40 sm:h-40 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
@@ -14,17 +14,23 @@
             </div>
             
             <!-- Basic Info -->
-            <div class="text-center sm:text-left flex-1">
-              <h1 class="text-2xl sm:text-3xl font-bold">{{profile.name}}</h1>
-              <p class="text-base-content/60">{{profile.username}}</p>
+            <div class="text-center sm:text-left flex-1 ">
+              <h1 class="text-2xl sm:text-3xl font-bold text-black">{{profile.first_name}} {{profile.last_name}}</h1>
+              <p class="text-base-content/60 text-gray-900">{{profile.username}}</p>
               <p class="mt-2 text-sm sm:text-base">{{profile.bio}}</p>
             </div>
+
+            
             
             <!-- Action Buttons -->
             <div class="flex gap-2 md:mt-24">
               <button class="btn btn-primary">Follow</button>
               <button class="btn btn-outline">Message</button>
             </div>
+          </div>
+          <!-- Edit profile button -->
+          <div class="bg-black p-2 rounded-full absolute top-6 right-3">
+            <lucide-angular [img]="Pen" class="my-icon"></lucide-angular>
           </div>
         </div>
       </div>
