@@ -126,8 +126,8 @@
                 <button routerLink="/create-post" class="btn bg-base-200 btn-sm">Create Post</button>
               </div>
               <div class="space-y-4">
-                <div *ngFor="let post of profile.recentPosts" class="border-b last:border-0 pb-4 last:pb-0">
-                  <p class="mb-2">{{post.content}}</p>
+                <div *ngFor="let post of profile.skillposts" class="border-b last:border-0 pb-4 last:pb-0">
+                  <p class="mb-2">{{post.title}}</p>
                   <div class="flex items-center justify-between">
                     <div class="flex gap-2">
                       <div *ngFor="let tag of post.tags" class="badge badge-primary">{{tag}}</div>

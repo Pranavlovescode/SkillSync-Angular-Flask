@@ -18,7 +18,7 @@ interface UserProfile {
   website: string;
   skills: Skill[];
   stats: UserStats;
-  recentPosts: Post[];
+  skillposts: Post[];
 }
 
 interface Skill {
@@ -35,8 +35,8 @@ interface UserStats {
 }
 
 interface Post {
-  id: number;
-  content: string;
+  _id: string;
+  title: string;
   date: Date;
   likes: number;
   tags: string[];
@@ -92,18 +92,18 @@ export class ProfileComponent {
       following: 567,
       totalLikes: 2891,
     },
-    recentPosts: [
+    skillposts: [
       {
-        id: 1,
-        content:
+        _id: '1',
+        title:
           'Just published a new article about Angular Signals! Check it out on my blog.',
         date: new Date('2024-02-22'),
         likes: 45,
         tags: ['angular', 'webdev'],
       },
       {
-        id: 2,
-        content:
+        _id: '2',
+        title:
           'Excited to share my latest project using Angular and Three.js!',
         date: new Date('2024-02-20'),
         likes: 32,

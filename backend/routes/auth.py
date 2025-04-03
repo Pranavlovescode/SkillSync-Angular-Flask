@@ -1,7 +1,7 @@
 from flask import Blueprint,session,make_response,Response
 from flask import request, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
-from db import user_collection
+from db import user_collection,skillpost_collection
 from bson import ObjectId
 from bson.json_util import dumps
 import cloudinary.uploader
@@ -81,10 +81,18 @@ def get_user_profile():
     if not user:
         return make_response(jsonify({"message":"User not logged in"}),401)
     else:
-        user = user_collection.find_one({"email":user})
-        if not user:
-            return make_response(jsonify({"message":"User not found"}),404)
-        return make_response(dumps(user),200)
+        user_doc = user_collection.find_one({"email": user})
+        if not user_doc:
+            return make_response(jsonify({"message":"User not found"}), 404)
+        
+        # Find user's skillposts
+        user_posts = skillpost_collection.find({"user": user_doc["_id"], "is_deleted": False})
+        
+        # Add skillposts to user data
+        user_doc["skillposts"] = list(user_posts)
+        
+        return make_response(dumps(user_doc), 200)
+
 
 
 @auth.route('/update-profile',methods=["PATCH"])
