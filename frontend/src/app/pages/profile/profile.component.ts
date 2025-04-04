@@ -1,4 +1,4 @@
-import { NgFor, NgForOf, ɵparseCookieValue } from '@angular/common';
+import { NgFor, NgForOf, NgIf, ɵparseCookieValue } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Cookie, Linkedin, LucideAngularModule, Pen } from 'lucide-angular';
@@ -37,14 +37,12 @@ interface UserStats {
 interface Post {
   _id: string;
   title: string;
-  date: Date;
-  likes: number;
   tags: string[];
 }
 
 @Component({
   selector: 'app-profile',
-  imports: [NgFor, NgForOf, RouterLink, NavbarComponent, LucideAngularModule],
+  imports: [NgFor, NgForOf, RouterLink, NavbarComponent, LucideAngularModule,NgIf],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css',
 })
@@ -52,21 +50,29 @@ export class ProfileComponent {
   readonly Pen = Pen;
   apiUrl: string = environment.base_url;
   JSON: JSON = JSON;
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+  }
   ngOnInit() {
     this.fetchProfile();
+    console.log('Cookie ', document.cookie);
+
   }
 
   fetchProfile() {
-    this.http.get(`${this.apiUrl}/auth/get-profile`, {
+    this.http.get<UserProfile>(`${this.apiUrl}/auth/get-profile`, {
       withCredentials: true,
     }).subscribe((res) => {
       console.log('The response is ', res);
-      this.profile = res as UserProfile;
-    }, (err) => {
+      this.profile = res;
+      this.profile.skillposts = res.skillposts
+      console.log('The profile is ', this.profile);
+      console.log('The skillposts are ', this.profile.skillposts);
+      console.log('The skillposts are ', this.profile.skillposts[0].title);
+    }, (err) => { 
       console.log('Error while fetching profile', err);
     });
   }
+  
 
   profile: UserProfile = {
     first_name: 'John',
@@ -92,24 +98,25 @@ export class ProfileComponent {
       following: 567,
       totalLikes: 2891,
     },
-    skillposts: [
-      {
-        _id: '1',
-        title:
-          'Just published a new article about Angular Signals! Check it out on my blog.',
-        date: new Date('2024-02-22'),
-        likes: 45,
-        tags: ['angular', 'webdev'],
-      },
-      {
-        _id: '2',
-        title:
-          'Excited to share my latest project using Angular and Three.js!',
-        date: new Date('2024-02-20'),
-        likes: 32,
-        tags: ['angular', 'threejs'],
-      },
-    ],
+    skillposts:[]
+    // skillposts: [
+    //   {
+    //     _id: '1',
+    //     title:
+    //       'Just published a new article about Angular Signals! Check it out on my blog.',
+    //     date: new Date('2024-02-22'),
+    //     likes: 45,
+    //     tags: ['angular', 'webdev'],
+    //   },
+    //   {
+    //     _id: '2',
+    //     title:
+    //       'Excited to share my latest project using Angular and Three.js!',
+    //     date: new Date('2024-02-20'),
+    //     likes: 32,
+    //     tags: ['angular', 'threejs'],
+    //   },
+    // ],
   };
 
   getSkillLevelClass(level: number): string {
