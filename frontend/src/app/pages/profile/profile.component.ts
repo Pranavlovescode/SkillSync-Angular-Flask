@@ -38,6 +38,13 @@ interface Post {
   _id: string;
   title: string;
   tags: string[];
+  user:string,
+  description:string,
+  created_at:Date,
+  is_active:boolean,
+  is_deleted:boolean,
+  video:string,
+  image:string
 }
 
 @Component({
@@ -72,52 +79,69 @@ export class ProfileComponent {
       console.log('Error while fetching profile', err);
     });
   }
+
+
   
 
-  profile: UserProfile = {
-    first_name: 'John',
-    last_name: 'Doe',
-    username: 'john_doe',
-    avatarUrl:
-      'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-oIqv4QIhiQKMTOM1vVBpBsZ04Bwclx.png',
-    coverUrl: '/assets/cover.jpg',
-    bio: 'Senior Angular Developer | Open Source Contributor | Tech Enthusiast',
-    location: 'San Francisco, CA',
-    joinDate: new Date('2022-01-01'),
-    website: 'https://johndoe.dev',
-    skills: [
-      { name: 'Angular', level: 5, endorsements: 42 },
-      { name: 'TypeScript', level: 4, endorsements: 38 },
-      { name: 'RxJS', level: 4, endorsements: 27 },
-      { name: 'Node.js', level: 3, endorsements: 31 },
-      { name: 'MongoDB', level: 3, endorsements: 25 },
-    ],
-    stats: {
-      posts: 156,
-      followers: 1234,
-      following: 567,
-      totalLikes: 2891,
-    },
-    skillposts:[]
-    // skillposts: [
-    //   {
-    //     _id: '1',
-    //     title:
-    //       'Just published a new article about Angular Signals! Check it out on my blog.',
-    //     date: new Date('2024-02-22'),
-    //     likes: 45,
-    //     tags: ['angular', 'webdev'],
-    //   },
-    //   {
-    //     _id: '2',
-    //     title:
-    //       'Excited to share my latest project using Angular and Three.js!',
-    //     date: new Date('2024-02-20'),
-    //     likes: 32,
-    //     tags: ['angular', 'threejs'],
-    //   },
-    // ],
-  };
+  // profile: UserProfile = {
+  //   first_name: 'John',
+  //   last_name: 'Doe',
+  //   username: 'john_doe',
+  //   avatarUrl:
+  //     'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-oIqv4QIhiQKMTOM1vVBpBsZ04Bwclx.png',
+  //   coverUrl: '/assets/cover.jpg',
+  //   bio: 'Senior Angular Developer | Open Source Contributor | Tech Enthusiast',
+  //   location: 'San Francisco, CA',
+  //   joinDate: new Date('2022-01-01'),
+  //   website: 'https://johndoe.dev',
+  //   skills: [
+  //     { name: 'Angular', level: 5, endorsements: 42 },
+  //     { name: 'TypeScript', level: 4, endorsements: 38 },
+  //     { name: 'RxJS', level: 4, endorsements: 27 },
+  //     { name: 'Node.js', level: 3, endorsements: 31 },
+  //     { name: 'MongoDB', level: 3, endorsements: 25 },
+  //   ],
+  //   stats: {
+  //     posts: 156,
+  //     followers: 1234,
+  //     following: 567,
+  //     totalLikes: 2891,
+  //   },
+  //   skillposts: [{
+  //     _id: '1',
+  //     title:
+  //       'Just published a new article about Angular Signals! Check it out on my blog.',
+  //     created_at: new Date('2024-02-22'),
+  //     // likes: 45,
+  //     tags: ['angular', 'webdev'],
+  //     user: '1',
+  //     description: 'Description',
+  //     is_active: true,
+  //     is_deleted: false,
+  //     video: 'video',
+  //     image: 'image'
+  //   }],
+  //   // skillposts: [
+  //   //   {
+  //   //     _id: '1',
+  //   //     title:
+  //   //       'Just published a new article about Angular Signals! Check it out on my blog.',
+  //   //     created_at: new Date('2024-02-22'),
+  //   //     // likes: 45,
+  //   //     tags: ['angular', 'webdev'],
+  //   //   },
+  //   //   {
+  //   //     _id: '2',
+  //   //     title:
+  //   //       'Excited to share my latest project using Angular and Three.js!',
+  //   //     date: new Date('2024-02-20'),
+  //   //     likes: 32,
+  //   //     tags: ['angular', 'threejs'],
+  //   //   },
+  //   // ],
+  // };
+
+  profile :UserProfile | null = null;
 
   getSkillLevelClass(level: number): string {
     return `progress-${level * 20}`;
