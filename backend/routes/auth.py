@@ -6,7 +6,7 @@ from bson import ObjectId
 from bson.json_util import dumps
 import cloudinary.uploader
 import cloudinary
-import os
+import os,datetime
 
 # Cloudinary Configuration
 cloudinary.config(
@@ -38,6 +38,7 @@ def signup():
         "is_email_verified":False,  
         "profile_picture":"",
         "bio":"",
+        "joined_on":datetime.datetime.now(),
     })
     session['user'] = user.email
     return make_response(jsonify({"message":"User created successfully"}),201)

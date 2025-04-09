@@ -14,7 +14,9 @@ interface UserProfile {
   coverUrl: string;
   bio: string;
   location: string;
-  joinDate: Date;
+  joined_on: {
+    $date: Date;
+  };
   website: string;
   skills: Skill[];
   stats: UserStats;
@@ -40,11 +42,14 @@ interface Post {
   tags: string[];
   user:string,
   description:string,
-  created_at:Date,
+  created_at:{
+    $date:Date,
+  },
   is_active:boolean,
   is_deleted:boolean,
   video:string,
-  image:string
+  image:string,
+  likes:number,
 }
 
 @Component({
@@ -152,10 +157,6 @@ export class ProfileComponent {
   }
 
   formatDate(date: Date): string {
-    return new Date(date).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
+    return new Date(date).toDateString();
   }
 }
