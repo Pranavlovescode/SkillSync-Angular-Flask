@@ -1,7 +1,7 @@
 import { NgClass, NgIf } from '@angular/common';
 import { Component, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ConfigService } from '../../services/config.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment.development';
@@ -12,7 +12,7 @@ declare const _NGX_ENV_: any;
 
 @Component({
   selector: 'app-login-page',
-  imports: [NgIf,NgClass,ReactiveFormsModule],
+  imports: [NgIf,NgClass,ReactiveFormsModule,RouterLink],
   templateUrl: './login-page.component.html',
   styleUrl: './login-page.component.css',
 })

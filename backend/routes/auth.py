@@ -24,7 +24,7 @@ def signup():
     user = user_collection.find_one({"email": data['email']})
     print(user)
     if user:
-        return jsonify({"message":"User already exists"}),400
+        return make_response(jsonify({"message":"User already exists"}),400)
     
     
 
@@ -40,7 +40,8 @@ def signup():
         "bio":"",
         "joined_on":datetime.datetime.now(),
     })
-    session['user'] = user.email
+    session['user'] = data['email']
+    print(session['user'])
     return make_response(jsonify({"message":"User created successfully"}),201)
 
 

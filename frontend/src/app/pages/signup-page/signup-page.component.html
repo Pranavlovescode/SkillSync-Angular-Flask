@@ -1,1 +1,229 @@
-<p>signup-page works!</p>
+<!-- signup.component.html -->
+<div class="flex min-h-screen w-full">
+  <!-- Left Panel -->
+  <div
+    class="hidden md:flex md:w-1/2 flex-col justify-center items-center p-8 text-center text-white bg-gradient-to-br from-indigo-600 to-purple-600"
+  >
+    <h1 class="text-4xl font-bold mb-4">Welcome!</h1>
+    <p class="text-xl max-w-md">
+      Create an account to access your personalized experience.
+    </p>
+  </div>
+
+  <!-- Right Panel - Adjusted for better vertical centering and scrolling -->
+  <div
+    class="w-full md:w-1/2 p-6 md:p-8 flex items-center justify-center bg-gray-900 text-white overflow-y-auto"
+  >
+    <div class="w-full max-w-md">
+      <h2 class="text-3xl font-bold mb-8 text-center">Sign Up</h2>
+
+      <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="w-full">
+        <!-- Name -->
+        <div class="flex flex-col md:flex-row md:space-x-4">
+          <div class="mb-6 flex-1">
+            <label for="firstName" class="block mb-2 font-medium"
+              >First Name</label
+            >
+            <input
+              type="text"
+              id="firstName"
+              formControlName="first_name"
+              placeholder="First name"
+              class="w-full px-4 py-3 rounded-md border border-gray-700 bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+            <div
+              *ngIf="
+                signupForm.get('first_name')?.invalid &&
+                (signupForm.get('first_name')?.dirty ||
+                  signupForm.get('first_name')?.touched)
+              "
+              class="mt-1 text-red-500 text-sm"
+            >
+              <span *ngIf="signupForm.get('first_name')?.errors?.['required']"
+                >First Name is required</span
+              >
+            </div>
+          </div>
+          <div class="mb-6 flex-1">
+            <label for="lastName" class="block mb-2 font-medium"
+              >Last Name</label
+            >
+            <input
+              type="text"
+              id="lastName"
+              formControlName="last_name"
+              placeholder="Last name"
+              class="w-full px-4 py-3 rounded-md border border-gray-700 bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+            <div
+              *ngIf="
+                signupForm.get('last_name')?.invalid &&
+                (signupForm.get('last_name')?.dirty ||
+                  signupForm.get('last_name')?.touched)
+              "
+              class="mt-1 text-red-500 text-sm"
+            >
+              <span *ngIf="signupForm.get('last_name')?.errors?.['required']"
+                >Last name is required</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Username -->
+        <div class="mb-6">
+          <label for="username" class="block mb-2 font-medium">Username</label>
+          <input
+            type="text"
+            id="username"
+            formControlName="username"
+            placeholder="john_doe"
+            class="w-full px-4 py-3 rounded-md border border-gray-700 bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          />
+          <div
+            *ngIf="
+              signupForm.get('username')?.invalid &&
+              (signupForm.get('username')?.dirty ||
+                signupForm.get('username')?.touched)
+            "
+            class="mt-1 text-red-500 text-sm"
+          >
+            <span *ngIf="signupForm.get('username')?.errors?.['required']"
+              >Username is required</span
+            >
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="mb-6">
+          <label for="email" class="block mb-2 font-medium">Email</label>
+          <input
+            type="email"
+            id="email"
+            formControlName="email"
+            placeholder="your@email.com"
+            class="w-full px-4 py-3 rounded-md border border-gray-700 bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          />
+          <div
+            *ngIf="
+              signupForm.get('email')?.invalid &&
+              (signupForm.get('email')?.dirty ||
+                signupForm.get('email')?.touched)
+            "
+            class="mt-1 text-red-500 text-sm"
+          >
+            <span *ngIf="signupForm.get('email')?.errors?.['required']"
+              >Email is required</span
+            >
+            <span *ngIf="signupForm.get('email')?.errors?.['email']"
+              >Please enter a valid email</span
+            >
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div class="mb-6">
+          <label for="password" class="block mb-2 font-medium">Password</label>
+          <input
+            type="password"
+            id="password"
+            formControlName="password"
+            placeholder="••••••"
+            class="w-full px-4 py-3 rounded-md border border-gray-700 bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          />
+          <div
+            *ngIf="
+              signupForm.get('password')?.invalid &&
+              (signupForm.get('password')?.dirty ||
+                signupForm.get('password')?.touched)
+            "
+            class="mt-1 text-red-500 text-sm"
+          >
+            <span *ngIf="signupForm.get('password')?.errors?.['required']"
+              >Password is required</span
+            >
+            <span *ngIf="signupForm.get('password')?.errors?.['minlength']"
+              >Password must be at least 6 characters</span
+            >
+          </div>
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="mb-6">
+          <label for="confirmPassword" class="block mb-2 font-medium"
+            >Confirm Password</label
+          >
+          <input
+            type="password"
+            id="confirmPassword"
+            formControlName="confirmPassword"
+            placeholder="••••••"
+            class="w-full px-4 py-3 rounded-md border border-gray-700 bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          />
+          <div
+            *ngIf="
+              signupForm.get('confirmPassword')?.invalid &&
+              (signupForm.get('confirmPassword')?.dirty ||
+                signupForm.get('confirmPassword')?.touched)
+            "
+            class="mt-1 text-red-500 text-sm"
+          >
+            <span
+              *ngIf="signupForm.get('confirmPassword')?.errors?.['required']"
+              >Please confirm your password</span
+            >
+          </div>
+          <div
+            *ngIf="signupForm.errors?.['passwordMismatch'] && signupForm.get('confirmPassword')?.touched"
+            class="mt-1 text-red-500 text-sm"
+          >
+            <span>Passwords do not match</span>
+          </div>
+        </div>
+
+        <!-- Terms & Conditions -->
+        <div class="mb-6 flex items-start">
+          <input
+            type="checkbox"
+            id="termsAccepted"
+            formControlName="termsAccepted"
+            class="mt-1 mr-2"
+          />
+          <label class="text-sm" for="termsAccepted"
+            >I agree to the
+            <a href="#" class="text-blue-400 hover:underline"
+              >Terms & Conditions</a
+            ></label
+          >
+        </div>
+        <div
+          *ngIf="
+            signupForm.get('termsAccepted')?.invalid &&
+            (signupForm.get('termsAccepted')?.dirty ||
+              signupForm.get('termsAccepted')?.touched)
+          "
+          class="mb-4 -mt-4 text-red-500 text-sm"
+        >
+          <span *ngIf="signupForm.get('termsAccepted')?.errors?.['required']"
+            >You must accept the terms to continue</span
+          >
+        </div>
+
+        <!-- Sign Up Button -->
+        <button
+          type="submit"
+          [disabled]="signupForm.invalid"
+          class="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Sign Up
+        </button>
+
+        <!-- Login Link -->
+        <p class="mt-6 text-center text-gray-400">
+          Already have an account?
+          <a routerLink="/" class="text-blue-400 hover:underline">Log in</a>
+        </p>
+      </form>
+    </div>
+  </div>
+</div>

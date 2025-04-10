@@ -41,4 +41,12 @@ export const routes: Routes = [
       return m.LoginPageComponent;
     },
   },
+  {
+    path:'signup',
+    pathMatch:'full',
+    async loadComponent() {
+      const m = await import('./pages/signup-page/signup-page.component');
+      return m.SignupPageComponent;
+    }
+  }
 ];
