@@ -11,9 +11,9 @@
             <div
               class="w-32 h-32 sm:w-40 sm:h-40 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2"
             >
-              @if (profile?.avatarUrl) {
+              @if (profile?.profile_picture) {
 
-              <img [src]="profile!.avatarUrl" alt="Profile picture" />
+              <img [src]="profile!.profile_picture" alt="Profile picture" />
               } @else {
               <img
                 src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
@@ -207,7 +207,7 @@
             <div class="space-y-4">
               <div *ngFor="let skill of profile?.skills" class="space-y-2">
                 <div class="flex items-center justify-between">
-                  <span class="font-medium">{{ skill.name }}</span>
+                  <span class="font-medium">{{ skill }}</span>
                   <button
                     class="btn btn-sm btn-ghost gap-2"
                     (click)="endorseSkill(skill)"

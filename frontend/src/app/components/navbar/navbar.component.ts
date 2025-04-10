@@ -9,7 +9,7 @@ interface UserProfile {
   first_name: string;
   last_name: string;
   username: string;
-  avatarUrl: string;
+  profile_picture: string;
   coverUrl: string;
   bio: string;
   location: string;

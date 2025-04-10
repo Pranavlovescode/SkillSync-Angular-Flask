@@ -107,13 +107,16 @@ def update_profile():
         if not user:
             return make_response(jsonify({"message":"User not found"}),404)
         print(user["_id"])
-        image_url = cloudinary.uploader.upload(data['profile_picture'],folder="SkillSync/user_profile")['secure_url']
+        image_url = cloudinary.uploader.upload(request.files.get('profile_picture'),folder="SkillSync/user_profile")['secure_url']
         user_data = {
             "first_name":data['first_name'],
             "last_name":data['last_name'],
             "username":data['username'],
             "profile_picture":image_url,
-            "bio":data['bio']
+            "bio":data['bio'],
+            "location":data['location'],
+            "website":data['website'],
+            "skills":request.form.getlist('skills')
         }
         user_collection.update_one(
             {"_id":ObjectId(user["_id"])},

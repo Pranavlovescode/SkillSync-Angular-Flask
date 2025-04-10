@@ -1,5 +1,5 @@
 <!-- profile-edit.component.html -->
-
+<form [formGroup]="profileForm">
 <div class="min-h-screen border-2 border-gray-700 shadow-md text-white md:w-1/2 mx-auto">
     <!-- Header with gradient background -->
     <div class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 p-6 relative">
@@ -24,24 +24,32 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
               </svg>
             </label>
-            <input type="file" id="photo-upload" class="hidden" (change)="onPhotoSelected($event)" accept="image/*" />
+            <input type="file" id="photo-upload" name="profile_picture" class="hidden" (change)="onPhotoSelected($event)" accept="image/*" />
           </div>
         </div>
         
         <!-- Name and Username fields -->
         <div class="mt-4 text-center">
           <div class="form-control w-full max-w-md mx-auto">
-            <input 
-              type="text" 
-              [value]="profile.first_name + ' ' + profile.last_name" 
-              placeholder="FirstName LastName" 
-              class="input input-bordered bg-base-100 bg-opacity-20 border-0 text-xl font-bold mb-2 text-center"
-            />
+            <div class="flex space-x-2">
+              <input 
+                type="text" 
+                formControlName="first_name"
+                placeholder="First Name" 
+                class="input input-bordered bg-base-100 bg-opacity-20 border-0 text-xl font-bold mb-2 text-center flex-1"
+              />
+              <input 
+                type="text" 
+                formControlName="last_name"
+                placeholder="Last Name" 
+                class="input input-bordered bg-base-100 bg-opacity-20 border-0 text-xl font-bold mb-2 text-center flex-1"
+              />
+            </div>
             <div class="input-group">
               <!-- <span class="bg-transparent px-2 flex items-center text-center text-gray-300">&#64;</span> -->
               <input 
                 type="text"
-                [value]="profile.username"
+                formControlName="username"
                 placeholder="username"
                 class="input input-bordered flex-1 bg-base-100 bg-opacity-20 border-0 text-gray-300 text-center"
               />
@@ -58,7 +66,7 @@
           <span class="text-xl font-semibold mb-4">Bio</span>
         </label>
         <textarea 
-          [value]="profile.bio" 
+          formControlName="bio"
           placeholder="Write something about yourself..." 
           class="textarea textarea-bordered bg-gray-800 h-24 text-white"
         ></textarea>
@@ -82,7 +90,7 @@
               </span>
               <input 
                 type="text" 
-                [value]="profile.location || 'N/A'" 
+                formControlName="location"
                 placeholder="Location" 
                 class="input input-bordered w-full bg-gray-700" 
               />
@@ -99,7 +107,7 @@
               </span>
               <input 
                 type="text" 
-                [value]="profile.location || 'N/A'" 
+                formControlName="website"
                 placeholder="Website" 
                 class="input input-bordered w-full bg-gray-700" 
               />
@@ -135,24 +143,26 @@
       
       <div class="card bg-gray-800 shadow-xl">
         <div class="card-body">
-          <div *ngIf="skills.length === 0" class="text-center text-gray-500 py-4">
+          <div *ngIf="skillsArray.length === 0" class="text-center text-gray-500 py-4">
             No skills added yet. Click "Add Skill" to add your expertise.
           </div>
           
-          <div *ngFor="let skill of skills; let i = index" class="flex justify-between items-center mb-2">
-            <div class="flex-1">
-              <input 
-                type="text" 
-                [value]="skills[i]" 
-                class="input input-bordered w-full bg-gray-700" 
-                placeholder="Skill name (e.g., JavaScript, Design, Marketing)"
-              />
+          <div formArrayName="skills">
+            <div *ngFor="let skill of skillsArray.controls; let i = index" class="flex justify-between items-center mb-2">
+              <div class="flex-1">
+                <input 
+                  type="text" 
+                  [formControlName]="i"
+                  class="input input-bordered w-full bg-gray-700" 
+                  placeholder="Skill name (e.g., JavaScript, Design, Marketing)"
+                />
+              </div>
+              <button class="btn btn-square btn-sm btn-error ml-2" (click)="removeSkill(i)">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
             </div>
-            <button class="btn btn-square btn-sm btn-error ml-2" (click)="removeSkill(i)">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
           </div>
         </div>
       </div>
@@ -163,3 +173,4 @@
       <button class="btn btn-primary w-full max-w-xs" (click)="saveProfile()">Save Profile</button>
     </div>
   </div>
+</form>
