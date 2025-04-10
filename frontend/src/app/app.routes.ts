@@ -48,5 +48,13 @@ export const routes: Routes = [
       const m = await import('./pages/signup-page/signup-page.component');
       return m.SignupPageComponent;
     }
+  },
+  {
+    path:'edit-profile',
+    pathMatch:'full',
+    async loadComponent() {
+      const m = await import('./components/profile-update/profile-update.component');
+      return m.ProfileUpdateComponent;
+    }
   }
 ];

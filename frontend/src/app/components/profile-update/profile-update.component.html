@@ -1,1 +1,165 @@
-<p>profile-update works!</p>
+<!-- profile-edit.component.html -->
+
+<div class="min-h-screen border-2 border-gray-700 shadow-md text-white md:w-1/2 mx-auto">
+    <!-- Header with gradient background -->
+    <div class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 p-6 relative">
+      <!-- Edit button in top right -->
+      <button (click)="saveProfile()" class="absolute top-4 right-4 btn btn-circle bg-base-100 bg-opacity-20 hover:bg-opacity-30 border-0">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+        </svg>
+      </button>
+      
+      <div class="pt-16 pb-4">
+        <!-- Profile image upload -->
+        <div class="flex justify-center">
+          <div class="relative">
+            <div class="avatar online">
+              <div class="w-32 h-32 rounded-full border-4 border-base-100 relative">
+                <img [src]="profile.profile_picture || 'https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp'" alt="Profile" class="object-cover" />
+              </div>
+            </div>
+            <label for="photo-upload" class="absolute bottom-0 right-0 btn btn-circle btn-sm bg-primary border-0">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+              </svg>
+            </label>
+            <input type="file" id="photo-upload" class="hidden" (change)="onPhotoSelected($event)" accept="image/*" />
+          </div>
+        </div>
+        
+        <!-- Name and Username fields -->
+        <div class="mt-4 text-center">
+          <div class="form-control w-full max-w-md mx-auto">
+            <input 
+              type="text" 
+              [value]="profile.first_name + ' ' + profile.last_name" 
+              placeholder="FirstName LastName" 
+              class="input input-bordered bg-base-100 bg-opacity-20 border-0 text-xl font-bold mb-2 text-center"
+            />
+            <div class="input-group">
+              <!-- <span class="bg-transparent px-2 flex items-center text-center text-gray-300">&#64;</span> -->
+              <input 
+                type="text"
+                [value]="profile.username"
+                placeholder="username"
+                class="input input-bordered flex-1 bg-base-100 bg-opacity-20 border-0 text-gray-300 text-center"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Bio section -->
+    <div class="p-6">
+      <div class="form-control">
+        <label class="label">
+          <span class="text-xl font-semibold mb-4">Bio</span>
+        </label>
+        <textarea 
+          [value]="profile.bio" 
+          placeholder="Write something about yourself..." 
+          class="textarea textarea-bordered bg-gray-800 h-24 text-white"
+        ></textarea>
+      </div>
+    </div>
+    
+    <!-- Details section -->
+    <div class="p-6 pt-0">
+      <h2 class="text-xl font-semibold mb-4">Details</h2>
+      
+      <div class="card bg-gray-800 shadow-xl">
+        <div class="card-body">
+          <!-- Location -->
+          <div class="form-control">
+            <label class="input-group">
+              <span class="bg-gray-700">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+                </svg>
+              </span>
+              <input 
+                type="text" 
+                [value]="profile.location || 'N/A'" 
+                placeholder="Location" 
+                class="input input-bordered w-full bg-gray-700" 
+              />
+            </label>
+          </div>
+          
+          <!-- Website -->
+          <div class="form-control mt-4">
+            <label class="input-group">
+              <span class="bg-gray-700">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" />
+                </svg>
+              </span>
+              <input 
+                type="text" 
+                [value]="profile.location || 'N/A'" 
+                placeholder="Website" 
+                class="input input-bordered w-full bg-gray-700" 
+              />
+            </label>
+          </div>
+          
+          <!-- Join date (read-only) -->
+          <div class="form-control mt-4">
+            <label class="input-group">
+              <span class="bg-gray-700">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 9v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z" />
+                </svg>
+              </span>
+              <input 
+                type="text" 
+                [value]="'Joined on ' + formatDate(profile.joined_on.$date)" 
+                class="input input-bordered w-full bg-gray-700" 
+                readonly
+              />
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Skills section -->
+    <div class="p-6 pt-0">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-semibold">Skills & Expertise</h2>
+        <button class="btn btn-sm btn-primary" (click)="addSkill()">Add Skill</button>
+      </div>
+      
+      <div class="card bg-gray-800 shadow-xl">
+        <div class="card-body">
+          <div *ngIf="skills.length === 0" class="text-center text-gray-500 py-4">
+            No skills added yet. Click "Add Skill" to add your expertise.
+          </div>
+          
+          <div *ngFor="let skill of skills; let i = index" class="flex justify-between items-center mb-2">
+            <div class="flex-1">
+              <input 
+                type="text" 
+                [value]="skills[i]" 
+                class="input input-bordered w-full bg-gray-700" 
+                placeholder="Skill name (e.g., JavaScript, Design, Marketing)"
+              />
+            </div>
+            <button class="btn btn-square btn-sm btn-error ml-2" (click)="removeSkill(i)">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Save button -->
+    <div class="p-6 flex justify-center">
+      <button class="btn btn-primary w-full max-w-xs" (click)="saveProfile()">Save Profile</button>
+    </div>
+  </div>
