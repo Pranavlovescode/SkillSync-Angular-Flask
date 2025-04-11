@@ -12,6 +12,7 @@ interface SkillPost {
   title: string;
   user: {
     username: string;
+    profile_picture: string;
   };
   description: string;
   tags: string[];

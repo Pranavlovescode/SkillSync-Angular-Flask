@@ -101,17 +101,26 @@ export class ProfileUpdateComponent implements OnInit {
 
           // Handle skills separately since it's a FormArray
           const skillsArray = this.skillsArray;
-          // Clear existing skills
+
+          // Clear existing
           while (skillsArray.length) {
             skillsArray.removeAt(0);
           }
-          // Add skills from response
-          if (res.skills && Array.isArray(res.skills)) {
+
+          // Populate from backend or allow at least one input
+          if (
+            res.skills &&
+            Array.isArray(res.skills) &&
+            res.skills.length > 0
+          ) {
             res.skills.forEach((skill) => {
               if (skill && typeof skill === 'string') {
                 skillsArray.push(this.fb.control(skill));
               }
             });
+          } else {
+            // Add an empty skill field so user can start typing
+            skillsArray.push(this.fb.control(''));
           }
         },
         error: (err) => {
@@ -127,6 +136,12 @@ export class ProfileUpdateComponent implements OnInit {
     //   }
     // });
   }
+
+  get joinedOnText(): string {
+    const date = this.profile?.joined_on?.$date;
+    return 'Joined on ' + this.formatDate(date ?? new Date());
+  }
+  
 
   onPhotoSelected(event: Event): void {
     const file = (event.target as HTMLInputElement).files?.[0];
@@ -151,7 +166,7 @@ export class ProfileUpdateComponent implements OnInit {
   }
 
   addSkill(): void {
-    this.skillsArray.push(this.fb.control(''));
+    this.skillsArray.push(this.fb.control(null, [Validators.required]));
   }
 
   removeSkill(index: number): void {
@@ -176,12 +191,9 @@ export class ProfileUpdateComponent implements OnInit {
     });
 
     // Add profile picture if it exists
-    const imageFile = this.profileForm.get('profile_picture')?.value
+    const imageFile = this.profileForm.get('profile_picture')?.value;
     if (imageFile instanceof File) {
-      formData.append(
-        'profile_picture',
-        imageFile
-      );
+      formData.append('profile_picture', imageFile);
     }
 
     // Debugging FormData
