@@ -37,7 +37,9 @@ interface UserStats {
 }
 
 interface Post {
-  _id: string;
+  _id: {
+    $oid: string;
+  };
   title: string;
   tags: string[];
   user:string,

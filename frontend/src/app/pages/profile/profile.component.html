@@ -48,7 +48,10 @@
         </div>
         <!-- Edit profile button -->
 
-        <button routerLink="/edit-profile" class="btn btn-neutral rounded-full absolute top-6 right-3">
+        <button
+          routerLink="/edit-profile"
+          class="btn btn-neutral rounded-full absolute top-6 right-3"
+        >
           <lucide-angular [img]="Pen" class="my-icon"></lucide-angular>
         </button>
       </div>
@@ -229,11 +232,11 @@
                     {{ skill.endorsements }}
                   </button>
                 </div>
-                <progress
+                <!-- <progress
                   class="progress progress-primary w-full"
                   [value]="skill.level"
                   max="5"
-                ></progress>
+                ></progress> -->
               </div>
             </div>
           </div>
@@ -269,39 +272,44 @@
                 *ngFor="let post of profile?.skillposts"
                 class="border-b last:border-0 pb-4 last:pb-0"
               >
-                <p class="mb-2">{{ post.title }}</p>
-                <div class="flex items-center justify-between">
-                  <div class="flex gap-2">
-                    <div
-                      *ngFor="let tag of post.tags"
-                      class="badge badge-primary"
-                    >
-                      {{ tag }}
-                    </div>
-                  </div>
-                  <div class="flex items-center gap-4">
-                    <span class="text-sm text-base-content/60">{{
-                      formatDate(post.created_at.$date)
-                    }}</span>
-                    <div class="flex items-center gap-1">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="h-5 w-5 text-red-500"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
+                <a
+                  [routerLink]="['/skillpost-edit', post._id.$oid]"
+                  class="flex flex-col"
+                >
+                  <p class="mb-2">{{ post.title }}</p>
+                  <div class="flex items-center justify-between">
+                    <div class="flex gap-2">
+                      <div
+                        *ngFor="let tag of post.tags"
+                        class="badge badge-primary"
                       >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                        />
-                      </svg>
-                      <span>{{ post.likes }}</span>
+                        {{ tag }}
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                      <span class="text-sm text-base-content/60">{{
+                        formatDate(post.created_at.$date)
+                      }}</span>
+                      <div class="flex items-center gap-1">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-5 w-5 text-red-500"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                          />
+                        </svg>
+                        <span>{{ post.likes }}</span>
+                      </div>
                     </div>
                   </div>
-                </div>
+                </a>
               </div>
             </div>
           </div>

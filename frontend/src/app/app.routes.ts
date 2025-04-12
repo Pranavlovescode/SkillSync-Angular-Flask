@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { SkillpostDetailsComponent } from './pages/skillpost-details/skillpost-details.component';
 
 export const routes: Routes = [
   {
@@ -56,5 +57,10 @@ export const routes: Routes = [
       const m = await import('./components/profile-update/profile-update.component');
       return m.ProfileUpdateComponent;
     }
+  },
+  {
+    path:"skillpost-edit/:postId",
+    pathMatch:"full",
+    component:SkillpostDetailsComponent
   }
 ];
