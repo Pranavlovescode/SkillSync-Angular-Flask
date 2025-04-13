@@ -1,3 +1,3 @@
 export const environment = {
-    base_url:'https://skillsync-angular-backend.pranavtitambe.in',
+    base_url:'http://127.0.0.1:5000',
 };

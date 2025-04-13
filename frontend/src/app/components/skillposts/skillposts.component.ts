@@ -1,4 +1,4 @@
-import { NgFor, NgIf, DatePipe, CommonModule } from '@angular/common';
+import { NgFor, NgIf, CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import {
   LucideAngularModule,
@@ -15,7 +15,7 @@ import { FormsModule } from '@angular/forms';
 declare const _NGX_ENV_: any;
 
 interface Comment {
-  user: {
+  user?: {
     username: string;
     profile_picture: string;
   };
@@ -28,14 +28,14 @@ interface SkillPost {
     $oid: string;
   };
   title: string;
-  user: {
+  user?: {
     username: string;
     profile_picture: string;
   };
   description: string;
   tags: string[];
   likes: number;
-  liked_by: (string | { $oid: string })[]; // Array of user IDs or objects with $oid
+  liked_by?: (string | { $oid: string })[]; // Array of user IDs or objects with $oid
   comments: Comment[];
   image: string;
   video: string;
@@ -55,7 +55,6 @@ interface SkillPost {
     RouterLink,
     FormsModule,
     CommonModule,
-    DatePipe,
   ],
   templateUrl: './skillposts.component.html',
   styleUrl: './skillposts.component.css',

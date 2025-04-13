@@ -35,10 +35,10 @@
       <div class="flex items-start gap-4">
         <div class="avatar">
           <div class="w-12 rounded-full">
-            <a [routerLink]="['/profile', post.user.username]">
+            <a [routerLink]="['/profile', post?.user?.username]">
               <img
-                [src]="post.user.profile_picture"
-                [alt]="post.user.username"
+                [src]="post?.user?.profile_picture"
+                [alt]="post?.user?.username"
               />
             </a>
           </div>
@@ -52,9 +52,9 @@
                 {{ post.title }}
               </h3>
             </a>
-            <a [routerLink]="['/profile', post.user.username]">
+            <a [routerLink]="['/profile', post?.user?.username]">
               <span class="text-sm text-base-content/60 hover:underline hover:cursor-pointer hover:text-primary">{{
-                post.user.username
+                post?.user?.username
               }}</span>
             </a>
           </div>
@@ -120,7 +120,7 @@
               (click)="toggleComments(post)"
             >
               <lucide-angular [img]="MessageCircle"></lucide-angular>
-              {{ post.comments?.length || 0 }}
+              {{ post.comments.length || 0 }}
             </button>
 
             <!-- Details button for navigating to the full post details -->

@@ -14,7 +14,7 @@ interface Comment {
   user_id: any;
   username: string;
   profile_picture: string;
-  created_at: {
+  created_at?: {
     $date: Date;
   };
   parent_id: string | null;
@@ -28,10 +28,10 @@ interface SkillPost {
   tags: string[];
   likes: number;
   liked_by: any[];
-  comments: Comment[];
+  comments?: Comment[];
   image: string;
   video: string;
-  created_at: {
+  created_at?: {
     $date: Date;
   };
 }
@@ -45,8 +45,8 @@ interface User {
 }
 
 interface Post {
-  skillpost: SkillPost;
-  user: User;
+  skillpost?: SkillPost;
+  user?: User;
   current_user?: User;
   user_has_liked?: boolean;
 }
