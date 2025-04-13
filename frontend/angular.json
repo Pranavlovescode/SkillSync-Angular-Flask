@@ -83,6 +83,21 @@
           "defaultConfiguration": "development",
           "options": {}
         },
+        "server": {
+          "builder": "@angular-devkit/build-angular:server",
+          "options": {
+            "outputPath": "dist/skillsync-angular-server",
+            "main": "src/main.server.ts",
+            "tsConfig": "tsconfig.server.json"
+          },
+          "configurations": {
+            "production": {
+              "outputHashing": "media",
+              "sourceMap": false,
+              "optimization": true
+            }
+          }
+        },
         "prerender": {
           "builder": "@angular-devkit/build-angular:prerender",
           "options": {
@@ -98,7 +113,6 @@
             ]
           }
         },
-
         "extract-i18n": {
           "builder": "@ngx-env/builder:extract-i18n",
           "options": {}
