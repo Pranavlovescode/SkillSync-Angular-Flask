@@ -69,13 +69,32 @@ def logout():
     
 
 
-@auth.route('/get-user/<id>',methods=["GET"])
-def get_user(id):
-    user = user_collection.find_one({"_id": ObjectId(id)})
-    print(user)
-    if not user:
-        return make_response(jsonify({"message":"User not found"}),404)
-    return make_response(dumps(user),200)
+@auth.route('/get-user/<username>',methods=["GET"])
+def get_user(username):
+    if not username:
+        return make_response(jsonify({"message":"Username not provided"}),400)
+    if not session.get('user'):
+        return make_response(jsonify({"message":"User not logged in"}),401)
+    else:
+        user = session.get('user')
+        print(username)
+        print(user)
+        user_doc = user_collection.find_one({"username": username})
+        user_posts = skillpost_collection.find({"user": user_doc["_id"], "is_deleted": False})
+        
+        # Add skillposts to user data
+        user_doc["skillposts"] = list(user_posts)
+        # Set profile editable to false for other users
+        user_doc["profile_editable"] = False
+        # Set profile editable to true for the logged-in user
+        if user_doc["email"] == user:
+            user_doc["profile_editable"] = True
+
+        print(user_doc)
+        if not user:
+            return make_response(jsonify({"message":"User not found"}),404)
+        
+        return make_response(dumps(user_doc), 200)
 
 @auth.route('/get-profile',methods=["GET"])
 def get_user_profile():

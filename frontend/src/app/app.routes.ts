@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { SkillpostDetailsComponent } from './pages/skillpost-details/skillpost-details.component';
+import { ProfileComponent } from './pages/profile/profile.component';
 
 export const routes: Routes = [
   {
@@ -19,12 +20,10 @@ export const routes: Routes = [
     },
   },
   {
-    path: 'profile',
+    path: 'profile/:username',
     pathMatch: 'full',
-    async loadComponent() {
-      const m = await import('./pages/profile/profile.component');
-      return m.ProfileComponent;
-    },
+    component: ProfileComponent,
+
   },
   {
     path: 'create-post',

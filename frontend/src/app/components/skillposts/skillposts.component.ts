@@ -9,7 +9,7 @@ import {
 import { NavbarComponent } from '../navbar/navbar.component';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment.development';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
 declare const _NGX_ENV_: any;
@@ -64,7 +64,7 @@ export class SkillpostsComponent implements OnInit {
   apiUrl: string = environment.base_url;
   JSON: JSON = JSON;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   ngOnInit() {
     console.log('Cookie ', document.cookie);
@@ -214,12 +214,19 @@ export class SkillpostsComponent implements OnInit {
   }
 
   toggleComments(post: SkillPost) {
-    post.showComments = !post.showComments;
-    console.log('Toggling comments for post');
+    this.router.navigate([`/skillpost-details/${post._id.$oid}`]);
+    // post.showComments = !post.showComments;
+    console.log('Toggling comments for post', post._id.$oid);
+
     // If opening comments and they haven't been loaded yet, fetch them
     if (post.showComments && (!post.comments || post.comments.length === 0)) {
       this.fetchComments(post);
     }
+  }
+
+  navigateToDetails(postId: string) {
+    // Navigate to the details page using the router
+    this.router.navigate([`/skillpost-details/${postId}`]);
   }
 
   fetchComments(post: SkillPost) {
@@ -232,7 +239,7 @@ export class SkillpostsComponent implements OnInit {
       .subscribe({
         next: (res: any) => {
           console.log('Comments response:', res);
-          
+
           // Simply use the comments array as-is from the backend
           if (Array.isArray(res)) {
             post.comments = res;
@@ -242,8 +249,8 @@ export class SkillpostsComponent implements OnInit {
             // Initialize with empty array if no comments returned
             post.comments = [];
           }
-          
-          console.log("Comments stored:", post.comments);
+
+          console.log('Comments stored:', post.comments);
         },
         error: (err) => {
           console.error('Error fetching comments:', err);
@@ -261,7 +268,7 @@ export class SkillpostsComponent implements OnInit {
       .post(
         `${this.apiUrl}/skillpost/comment/${post._id.$oid}`,
         {
-          comment: post.newComment, // Using 'comment' to match backend parameter name
+          comment: post.newComment,
         },
         {
           withCredentials: true,
@@ -269,28 +276,22 @@ export class SkillpostsComponent implements OnInit {
       )
       .subscribe({
         next: (res: any) => {
-          console.log('Add comment response:', res);
+          console.log('Comment added:', res);
 
-          // Use the comments directly from the server response
-          if (res && res.comments && Array.isArray(res.comments)) {
-            post.comments = res.comments;
-          } else {
-            // If server doesn't return the full comments array, add locally
-            if (!post.comments) post.comments = [];
-            
-            // Add a new comment in the format that matches our backend
-            const newComment:Comment = {
-              text: post.newComment || '', 
-              user:{username: this.currentUser.username,
-              profile_picture: this.currentUser.avatarUrl},
-              timestamp: new Date().toISOString(),
-              // replies: []
-            };
-            
-            post.comments.push(newComment);
+          // Push the new comment to the comments array
+          if (res && res.comment) {
+            post.comments.push({
+              text: res.comment.text,
+              timestamp: res.comment.timestamp,
+              user: {
+                username: this.currentUser.username,
+                profile_picture: this.currentUser.avatarUrl,
+              },
+            });
           }
-          
-          post.newComment = ''; // Clear the input field
+
+          // Clear the input
+          post.newComment = '';
         },
         error: (err) => {
           console.error('Error adding comment:', err);

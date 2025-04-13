@@ -48,12 +48,14 @@
         </div>
         <!-- Edit profile button -->
 
+        @if(profile?.profile_editable){
         <button
           routerLink="/edit-profile"
           class="btn btn-neutral rounded-full absolute top-6 right-3"
         >
           <lucide-angular [img]="Pen" class="my-icon"></lucide-angular>
         </button>
+        }
       </div>
     </div>
   </div>

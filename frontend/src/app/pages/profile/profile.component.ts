@@ -1,6 +1,6 @@
 import { NgFor, NgForOf, NgIf, ɵparseCookieValue } from '@angular/common';
 import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, Route, RouterLink } from '@angular/router';
 import { Cookie, Linkedin, LucideAngularModule, Pen } from 'lucide-angular';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
 import { environment } from '../../../environments/environment.development';
@@ -21,6 +21,7 @@ interface UserProfile {
   skills: Skill[];
   stats: UserStats;
   skillposts: Post[];
+  profile_editable: boolean;
 }
 
 interface Skill {
@@ -64,16 +65,21 @@ export class ProfileComponent {
   readonly Pen = Pen;
   apiUrl: string = environment.base_url;
   JSON: JSON = JSON;
-  constructor(private http: HttpClient) {
+  username: string | null = null;
+  constructor(private http: HttpClient,private route:ActivatedRoute) {
   }
-  ngOnInit() {
-    this.fetchProfile();
-    console.log('Cookie ', document.cookie);
-
+  ngOnInit(): void {
+    this.route.paramMap.subscribe((params) => {
+      this.username = params.get('username');
+      console.log('The username is ', this.username);
+      if (this.username) {
+        this.fetchProfile(this.username);
+      }
+    });
   }
 
-  fetchProfile() {
-    this.http.get<UserProfile>(`${this.apiUrl}/auth/get-profile`, {
+  fetchProfile(username: string) {
+    this.http.get<UserProfile>(`${this.apiUrl}/auth/get-user/${username}`, {
       withCredentials: true,
     }).subscribe((res) => {
       console.log('The response is ', res);
