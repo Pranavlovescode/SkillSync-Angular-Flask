@@ -66,7 +66,7 @@ export class SkillpostsComponent implements OnInit {
   constructor(private http: HttpClient, private router: Router) {}
 
   ngOnInit() {
-    console.log('Cookie ', document.cookie);
+    // console.log('Cookie ', document.cookie);
     // First fetch user info, then fetch posts
     this.getCurrentUser();
   }

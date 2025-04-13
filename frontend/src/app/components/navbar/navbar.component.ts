@@ -95,7 +95,7 @@ export class NavbarComponent {
 
   ngOnInit() {
     this.getUser();
-    console.log('Cookie ', document.cookie);
+    // console.log('Cookie ', document.cookie);
   }
 
 
