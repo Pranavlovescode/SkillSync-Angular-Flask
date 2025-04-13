@@ -16,7 +16,9 @@
             "outputPath": "dist/skillsync-angular",
             "index": "src/index.html",
             "browser": "src/main.ts",
-            "polyfills": ["zone.js"],
+            "polyfills": [
+              "zone.js"
+            ],
             "tsConfig": "tsconfig.app.json",
             "assets": [
               {
@@ -24,7 +26,10 @@
                 "input": "public"
               }
             ],
-            "styles": ["src/custom-theme.scss", "src/styles.css"],
+            "styles": [
+              "src/custom-theme.scss",
+              "src/styles.css"
+            ],
             "scripts": [],
             "server": "src/main.server.ts",
             "outputMode": "server",
@@ -78,6 +83,22 @@
           "defaultConfiguration": "development",
           "options": {}
         },
+        "prerender": {
+          "builder": "@angular-devkit/build-angular:prerender",
+          "options": {
+            "browserTarget": "skillsync-angular:build:production",
+            "serverTarget": "skillsync-angular:server:production",
+            "routes": [
+              "/",
+              "/signup",
+              "/home",
+              "/explore",
+              "/create-post",
+              "/edit-profile"
+            ]
+          }
+        },
+
         "extract-i18n": {
           "builder": "@ngx-env/builder:extract-i18n",
           "options": {}
@@ -85,7 +106,10 @@
         "test": {
           "builder": "@ngx-env/builder:karma",
           "options": {
-            "polyfills": ["zone.js", "zone.js/testing"],
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ],
             "tsConfig": "tsconfig.spec.json",
             "assets": [
               {
@@ -93,7 +117,9 @@
                 "input": "public"
               }
             ],
-            "styles": ["src/styles.css"],
+            "styles": [
+              "src/styles.css"
+            ],
             "scripts": [],
             "builderMode": "browser"
           }
