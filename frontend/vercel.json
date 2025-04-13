@@ -2,14 +2,14 @@
     "version": 2,
     "builds": [
       {
-        "src": "dist/your-project-name/**",
+        "src": "dist/skillsync-angular/**",
         "use": "@vercel/static"
       }
     ],
     "routes": [
       {
         "src": "/(.*)",
-        "dest": "/dist/your-project-name/index.html"
+        "dest": "/dist/skillsync-angular/index.html"
       }
     ]
   }
