@@ -25,7 +25,7 @@ export const routes: Routes = [
     pathMatch: 'full',
     component: ProfileComponent,
     data:{
-      RenderMode:RenderMode.Server,
+      renderMode:'ssr'
     }
 
   },
@@ -66,7 +66,7 @@ export const routes: Routes = [
     pathMatch:"full",
     component:SkillpostDetailsComponent,
     data:{
-      RenderMode:RenderMode.Server,
+      renderMode:'ssr'
     }
   }
 ];
