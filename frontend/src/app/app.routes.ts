@@ -59,7 +59,7 @@ export const routes: Routes = [
     }
   },
   {
-    path:"skillpost-edit/:postId",
+    path:"skillpost-details/:postId",
     pathMatch:"full",
     component:SkillpostDetailsComponent
   }

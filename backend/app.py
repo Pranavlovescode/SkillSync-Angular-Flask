@@ -1,4 +1,5 @@
 from flask import Flask
+import json
 from config import Config
 from routes.auth import auth
 from routes.skillpost import skillpost
@@ -9,6 +10,14 @@ from flask_cors import CORS
 from flask_session import Session
 from db import mongo_client as client
 from datetime import timedelta
+from bson import ObjectId
+
+# Custom JSON encoder to handle MongoDB ObjectId
+class MongoJSONEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, ObjectId):
+            return str(obj)
+        return super().default(obj)
 
 # Load environment variables from .env
 load_dotenv()
@@ -16,38 +25,28 @@ load_dotenv()
 app = Flask(__name__)
 app.config.from_object(Config)
 
+# Set custom JSON encoder for the app
+app.json_encoder = MongoJSONEncoder
+
 CORS(app,supports_credentials=True,origins=os.getenv('ORIGIN'))
 
+# For development environment
 app.config["SESSION_TYPE"] = "mongodb"
 app.config["SESSION_PERMANENT"] = True
 app.config["SESSION_USE_SIGNER"] = True
 app.config["SESSION_MONGODB"] = client
 app.config["SESSION_MONGODB_DB"] = "skill_sync_sessions"
 app.config["SESSION_MONGODB_COLLECTION"] = "sessions"
-app.config["SESSION_COOKIE_SAMESITE"] = "None"
-app.config["SESSION_COOKIE_SECURE"] = True
-app.config["SESSION_COOKIE_HTTPONLY"] = False
-app.config["SESSION_COOKIE_EXPIRES"] = timedelta(days=7)  # This alone is NOT enough
+
+# Cookie settings - development friendly
+app.config["SESSION_COOKIE_HTTPONLY"] = True
+app.config["SESSION_COOKIE_SAMESITE"] = "None"  # For cross-site requests
+app.config["SESSION_COOKIE_SECURE"] = True     # Required when SameSite is "None"
+
+# Session lifetime
 app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=7)
 
-
 Session(app)
-# mongo_uri = os.getenv("MONGO_URI")
-
-
-# #  Use Flask's MONGO_URI for MongoClient
-# mongo_client = MongoClient(mongo_uri)
-# db = mongo_client['skillsync-db']  # Use Atlas database
-
-# user_collection = db['user']  # Use users collection
-# skillpost_collection = db['skillposts']  # Use skillposts collection
-
-# Check connection
-# try:
-#     mongo_client.admin.command('ping')
-#     print("✅ Connected to MongoDB Atlas successfully!")
-# except Exception as e:
-#     print("❌ MongoDB connection failed:", e)
 
 # Registering the blueprints
 app.register_blueprint(auth, url_prefix='/auth')

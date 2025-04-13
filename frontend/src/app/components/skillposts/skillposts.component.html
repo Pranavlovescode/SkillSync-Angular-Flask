@@ -32,44 +32,110 @@
       <div class="flex items-start gap-4">
         <div class="avatar">
           <div class="w-12 rounded-full">
-            <img [src]="post.user.profile_picture" [alt]="post.user" />
+            <img [src]="post.user.profile_picture" [alt]="post.user.username" />
           </div>
         </div>
         <div class="flex-1">
           <div class="flex items-center gap-2">
-            <h3 class="font-bold">{{ post.title }}</h3>
+            <a [routerLink]="['/skillpost-details', post._id.$oid]">
+              <h3 class="font-bold hover:underline hover:cursor-pointer hover:text-primary">{{ post.title }}</h3>
+            </a>
             <span class="text-sm text-base-content/60">{{
               post.user.username
             }}</span>
           </div>
           <p class="mt-2">{{ post.description }}</p>
           
-          <div class="mt-3 flex items-center gap-2">
+          <div class="mt-3 flex flex-wrap items-center gap-2">
             <div *ngFor="let tag of post.tags" class="badge badge-primary">
               {{ tag }}
             </div>
           </div>
-          @if (post.image) {
+          
+          <ng-container *ngIf="post.image">
             <div class="mt-3">
               <img [src]="post.image" [alt]="post.title" class="w-full" />
             </div>
-          }
-          @else if (post.video) {
+          </ng-container>
+          
+          <ng-container *ngIf="post.video && !post.image">
             <div class="mt-3">
               <video [src]="post.video" class="w-full" controls>
                 Your browser does not support the video tag.
               </video>
             </div>
-          }
-          @else {
-            <div class="mt-3">
-            </div>
-          }
-          <div class="mt-4 flex items-center gap-2">
-            <button class="btn btn-ghost btn-sm gap-2" (click)="likePost(post)">
-              <lucide-angular [img]="Heart"></lucide-angular>
-              {{ post.likes }}
+          </ng-container>
+          
+          <div class="mt-4 flex items-center gap-4">
+            <button 
+              class="btn btn-ghost btn-sm gap-2" 
+              [class.text-error]="isPostLikedByCurrentUser(post)"
+              (click)="likePost(post)"
+            >
+              <ng-container *ngIf="isPostLikedByCurrentUser(post); else outlinedHeart">
+                <!-- Filled heart icon when liked -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-heart text-error">
+                  <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                </svg>
+              </ng-container>
+              <ng-template #outlinedHeart>
+                <!-- Outlined heart icon when not liked -->
+                <lucide-angular [img]="Heart"></lucide-angular>
+              </ng-template>
+              {{ post.likes || 0 }}
             </button>
+            
+            <button class="btn btn-ghost btn-sm gap-2" (click)="toggleComments(post)">
+              <lucide-angular [img]="MessageCircle"></lucide-angular>
+              {{ post.comments?.length || 0 }}
+            </button>
+          </div>
+          
+          <!-- Comments Section -->
+          <div *ngIf="post.showComments" class="mt-4 border-t pt-4">
+            <!-- Debug info (temporary) -->
+            <div *ngIf="false" class="text-xs p-2 bg-base-300 mb-2 overflow-auto max-h-48">
+              <pre>{{ post.comments | json }}</pre>
+            </div>
+            
+            <!-- Comment List -->
+            <div *ngIf="post.comments && post.comments.length > 0" class="space-y-3 mb-4">
+              <div *ngFor="let comment of post.comments" class="flex gap-3">
+                <div class="avatar">
+                  <div class="w-8 rounded-full">
+                    <!-- Use the direct properties without nesting -->
+                    <img [src]="comment.profile_picture || currentUser.avatarUrl" [alt]="comment.username || 'User'" />
+                  </div>
+                </div>
+                <div class="bg-base-200 px-3 py-2 rounded-lg flex-1">
+                  <div class="flex items-center gap-2">
+                    <span class="font-semibold text-sm">{{ comment.username || 'Anonymous' }}</span>
+                    <span class="text-xs text-base-content/60">
+                      {{ comment.created_at || comment.timestamp }}
+                    </span>
+                  </div>
+                  <p class="text-sm mt-1">{{ comment.text }}</p>
+                </div>
+              </div>
+            </div>
+            
+            <!-- No Comments Message -->
+            <div *ngIf="!post.comments || post.comments.length === 0" class="text-center text-base-content/60 py-2">
+              No comments yet. Be the first to comment!
+            </div>
+            
+            <!-- Comment Input -->
+            <div class="flex gap-2 mt-3">
+              <input 
+                [(ngModel)]="post.newComment" 
+                class="input input-bordered flex-1 text-sm" 
+                placeholder="Add a comment..."
+                (keyup.enter)="addComment(post)"
+              />
+              <button class="btn btn-primary btn-sm" (click)="addComment(post)">
+                <lucide-angular [img]="Send" size="18"></lucide-angular>
+              </button>
+            </div>
           </div>
         </div>
       </div>
