@@ -24,10 +24,9 @@ export const routes: Routes = [
     path: 'profile/:username',
     pathMatch: 'full',
     component: ProfileComponent,
-    data:{
-      renderMode:'browser'
+    data: {
+      renderMode: 'client'
     }
-
   },
   {
     path: 'create-post',
@@ -66,12 +65,12 @@ export const routes: Routes = [
     pathMatch:"full",
     component:SkillpostDetailsComponent,
     data:{
-      renderMode:'browser'
+      renderMode:'client'
     }
   }
 ];
 
-export const getPrerenderParams = () => {
+export function getPrerenderParams() {
   return [
     {
       route: 'profile/:username',
@@ -86,4 +85,4 @@ export const getPrerenderParams = () => {
       }
     }
   ];
-};
+}
