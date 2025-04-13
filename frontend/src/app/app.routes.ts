@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { SkillpostDetailsComponent } from './pages/skillpost-details/skillpost-details.component';
 import { ProfileComponent } from './pages/profile/profile.component';
-import { RenderMode } from '@angular/ssr';
+
 
 export const routes: Routes = [
   {
@@ -25,7 +25,7 @@ export const routes: Routes = [
     pathMatch: 'full',
     component: ProfileComponent,
     data:{
-      renderMode:'ssr'
+      renderMode:'browser'
     }
 
   },
@@ -66,7 +66,24 @@ export const routes: Routes = [
     pathMatch:"full",
     component:SkillpostDetailsComponent,
     data:{
-      renderMode:'ssr'
+      renderMode:'browser'
     }
   }
 ];
+
+export const getPrerenderParams = () => {
+  return [
+    {
+      route: 'profile/:username',
+      params: {
+        username: 'john-doe' // 👈 Replace with example/prebuilt usernames
+      }
+    },
+    {
+      route: 'skillpost-details/:postId',
+      params: {
+        postId: '123' // 👈 Replace with example/prebuilt postIds
+      }
+    }
+  ];
+};
