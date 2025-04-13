@@ -11,6 +11,14 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Client
   },
   {
+    path: 'create-post',
+    renderMode: RenderMode.Client
+  },
+  {
+    path: 'edit-profile',
+    renderMode: RenderMode.Client
+  },
+  {
     path: '**',
     renderMode: RenderMode.Prerender
   }

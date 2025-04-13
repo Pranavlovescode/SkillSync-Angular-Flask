@@ -35,6 +35,9 @@ export const routes: Routes = [
       const m = await import('./pages/create-post/create-post.component');
       return m.CreatePostComponent;
     },
+    data: {
+      renderMode: 'client'
+    }
   },
   {
     path: '',
@@ -58,6 +61,9 @@ export const routes: Routes = [
     async loadComponent() {
       const m = await import('./components/profile-update/profile-update.component');
       return m.ProfileUpdateComponent;
+    },
+    data: {
+      renderMode: 'client'
     }
   },
   {
