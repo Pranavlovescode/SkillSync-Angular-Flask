@@ -19,6 +19,9 @@ export const routes: Routes = [
       const m = await import('./components/skillposts/skillposts.component');
       return m.SkillpostsComponent;
     },
+    data: {
+      renderMode: 'client'
+    }
   },
   {
     path: 'profile/:username',
