@@ -1,15 +1,15 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { skillPostService } from '@/services/skillPostService';
 import { Heart, MessageCircle, Reply } from 'lucide-react';
 import Navbar from '@/components/Navbar/Navbar';
 
-export default function PostDetailPage({ params }) {
+export default function PostDetailPage() {
   const router = useRouter();
-  const { id } = params;
+  const { id } = useParams();
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');

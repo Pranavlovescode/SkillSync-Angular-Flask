@@ -29,7 +29,7 @@ export default function LoginPage() {
       setSuccess(true)
       setTimeout(() => {
         setSuccess(false)
-        router.push("/home")
+        router.push("/main")
       }, 2000)
     } catch (err) {
       setError(err.message || "Failed to login. Please check your credentials.")

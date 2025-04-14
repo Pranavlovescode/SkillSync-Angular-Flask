@@ -5,7 +5,7 @@ const API_URL = 'http://localhost:5000';
 export const skillPostService = {
   getAllPosts: async () => {
     try {
-      const response = await axios.get(`${API_URL}/skillposts`);
+      const response = await axios.get(`${API_URL}/skillpost/get-all`,{withCredentials:true});
       return response.data;
     } catch (error) {
       throw error.response?.data || { message: 'An error occurred while fetching posts' };
@@ -14,7 +14,7 @@ export const skillPostService = {
 
   getPostById: async (postId) => {
     try {
-      const response = await axios.get(`${API_URL}/skillposts/${postId}`);
+      const response = await axios.get(`${API_URL}/skillpost/${postId}`);
       return response.data;
     } catch (error) {
       throw error.response?.data || { message: 'An error occurred while fetching post' };
@@ -23,9 +23,8 @@ export const skillPostService = {
 
   createPost: async (postData) => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.post(`${API_URL}/skillposts`, postData, {
-        headers: { Authorization: `Bearer ${token}` }
+      const response = await axios.post(`${API_URL}/skillpost/create`, postData, {
+        withCredentials:true
       });
       return response.data;
     } catch (error) {
@@ -36,8 +35,8 @@ export const skillPostService = {
   updatePost: async (postId, postData) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.put(`${API_URL}/skillposts/${postId}`, postData, {
-        headers: { Authorization: `Bearer ${token}` }
+      const response = await axios.put(`${API_URL}/skillpost/${postId}`, postData, {
+        withCredentials:true
       });
       return response.data;
     } catch (error) {
@@ -48,8 +47,8 @@ export const skillPostService = {
   deletePost: async (postId) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.delete(`${API_URL}/skillposts/${postId}`, {
-        headers: { Authorization: `Bearer ${token}` }
+      const response = await axios.delete(`${API_URL}/skillpost/${postId}`, {
+        withCredentials:true
       });
       return response.data;
     } catch (error) {
@@ -60,8 +59,8 @@ export const skillPostService = {
   likePost: async (postId) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.post(`${API_URL}/skillposts/${postId}/like`, {}, {
-        headers: { Authorization: `Bearer ${token}` }
+      const response = await axios.post(`${API_URL}/skillpost/${postId}/like`, {}, {
+        withCredentials:true
       });
       return response.data;
     } catch (error) {
@@ -72,8 +71,8 @@ export const skillPostService = {
   addComment: async (postId, comment) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.post(`${API_URL}/skillposts/${postId}/comments`, { comment }, {
-        headers: { Authorization: `Bearer ${token}` }
+      const response = await axios.post(`${API_URL}/skillpost/${postId}/comments`, { comment }, {
+        withCredentials:true
       });
       return response.data;
     } catch (error) {
@@ -85,13 +84,13 @@ export const skillPostService = {
     try {
       const token = localStorage.getItem('token');
       const response = await axios.post(
-        `${API_URL}/skillposts/${postId}/comments`, 
+        `${API_URL}/skillpost/${postId}/comments`, 
         { 
           comment: replyText,
           parent_id: commentId 
         }, 
         {
-          headers: { Authorization: `Bearer ${token}` }
+          withCredentials:true
         }
       );
       return response.data;
@@ -103,8 +102,8 @@ export const skillPostService = {
   getComments: async (postId) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`${API_URL}/skillposts/${postId}/comments`, {
-        headers: { Authorization: `Bearer ${token}` }
+      const response = await axios.get(`${API_URL}/skillpost/${postId}/comments`, {
+        withCredentials:true
       });
       return response.data;
     } catch (error) {
@@ -114,7 +113,7 @@ export const skillPostService = {
 
   getUserPosts: async (userId) => {
     try {
-      const response = await axios.get(`${API_URL}/skillposts/user/${userId}`);
+      const response = await axios.get(`${API_URL}/skillpost/user/${userId}`);
       return response.data;
     } catch (error) {
       throw error.response?.data || { message: 'An error occurred while fetching user posts' };

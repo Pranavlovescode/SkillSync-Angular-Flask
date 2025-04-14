@@ -16,7 +16,6 @@ import {
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-  navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -35,41 +34,38 @@ import { useRouter } from "next/navigation";
 
 export default function Navbar() {
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
-  const [userProfile , setUserProfile] = useState({});
+  const [userProfile, setUserProfile] = useState({});
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
   const router = useRouter();
-  
-  useEffect(()=>{
+
+  useEffect(() => {
     fetchCurrentUser();
-  },[])
-  
-  const fetchCurrentUser = async()=>{
-    const response = await authService.getProfile();
-    if(response){
+  }, []);
+
+  const fetchCurrentUser = async () => {
+    const response = await authService.getCurrentUser();
+    if (response) {
       console.log("User data fetched successfully", response);
       setUserProfile(response);
       setIsUserLoggedIn(true);
-    }
-    else{
+    } else {
       console.log("Failed to fetch user data");
       setIsUserLoggedIn(false);
     }
-  }
+  };
   const handleLogout = async () => {
     try {
       const response = await authService.logout();
       console.log("Logout successful", response);
       setIsUserLoggedIn(false);
-      router.push('/auth/login')
+      router.push("/auth/login");
     } catch (error) {
       console.error("Logout failed", error);
     }
-  }
-
-
+  };
 
   return (
-    <nav className="bg-zinc-950 text-white py-3 px-6 flex items-center justify-between shadow-lg border-b border-zinc-800">
+    <nav className="z-20 fixed w-full bg-zinc-950 text-white py-3 px-6 flex items-center justify-between shadow-lg border-b border-zinc-800">
       <div className="flex items-center space-x-6">
         <h1 className="text-xl font-bold bg-gradient-to-r from-blue-400 to-violet-500 bg-clip-text text-transparent">
           SkillSync
@@ -79,7 +75,7 @@ export default function Navbar() {
         <NavigationMenu className="hidden md:block">
           <NavigationMenuList className="flex space-x-1">
             <NavigationMenuItem>
-              <Link href="/home"  passHref>
+              <Link href="/main" passHref>
                 <NavigationMenuLink asChild>
                   <div className="flex flex-row items-center space-x-2">
                     <Home size={16} />
@@ -90,7 +86,7 @@ export default function Navbar() {
             </NavigationMenuItem>
             <NavigationMenuItem>
               <Link href="/explore" passHref>
-                <NavigationMenuLink asChild >
+                <NavigationMenuLink asChild>
                   <div className="flex flex-row items-center space-x-2">
                     <Compass size={16} />
                     <span>Explore</span>
@@ -136,7 +132,10 @@ export default function Navbar() {
               className="rounded-full h-8 w-8 p-0 text-white"
             >
               <Avatar>
-                <AvatarImage src={userProfile.profile_picture} alt="User Avatar" />
+                <AvatarImage
+                  src={userProfile.profile_picture}
+                  alt="User Avatar"
+                />
                 <AvatarFallback className="bg-zinc-800">JS</AvatarFallback>
               </Avatar>
             </Button>
@@ -147,7 +146,10 @@ export default function Navbar() {
           >
             <DropdownMenuLabel className="flex items-center space-x-2 py-2">
               <Avatar className="h-8 w-8">
-                <AvatarImage src={userProfile.profile_picture} alt="User Avatar" />
+                <AvatarImage
+                  src={userProfile.profile_picture}
+                  alt="User Avatar"
+                />
                 <AvatarFallback>JS</AvatarFallback>
               </Avatar>
               <div className="flex flex-col">
@@ -160,16 +162,21 @@ export default function Navbar() {
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator className="bg-zinc-800" />
-            <DropdownMenuItem className="flex items-center space-x-2 cursor-pointer hover:bg-zinc-700 focus:bg-zinc-700">
-              <User size={16} />
-              <span className="text-white">Profile</span>
-            </DropdownMenuItem>
+            <Link href={`/main/profile/${userProfile?.username}`}>
+              <DropdownMenuItem className="flex flex-row items-center space-x-2 cursor-pointer hover:bg-zinc-700 focus:bg-zinc-700">
+                <User size={16} />
+                <span className="text-white">Profile</span>
+              </DropdownMenuItem>
+            </Link>
             <DropdownMenuItem className="flex items-center space-x-2 cursor-pointer hover:bg-zinc-700 focus:bg-zinc-700">
               <Settings size={16} />
               <span className="text-white">Settings</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator className="bg-zinc-800" />
-            <DropdownMenuItem onClick={handleLogout} className="flex items-center space-x-2 cursor-pointer text-red-500 hover:bg-zinc-700 focus:bg-zinc-700 focus:text-red-500">
+            <DropdownMenuItem
+              onClick={handleLogout}
+              className="flex items-center space-x-2 cursor-pointer text-red-500 hover:bg-zinc-700 focus:bg-zinc-700 focus:text-red-500"
+            >
               <LogOut size={16} />
               <span>Logout</span>
             </DropdownMenuItem>

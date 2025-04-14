@@ -56,7 +56,7 @@ export default function SignupPage() {
       await authService.signup(signupData);
       setSuccess(true);
       setTimeout(()=>{
-        router.push("/home");
+        router.push("/main");
       },5000)
     } catch (err) {
       setError(err.message || "Failed to create account. Please try again.");

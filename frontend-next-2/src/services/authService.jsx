@@ -35,9 +35,16 @@ export const authService = {
     }
   },
 
-  getCurrentUser: () => {
-    const user = localStorage.getItem('user');
-    return user ? JSON.parse(user) : null;
+  getCurrentUser: async() => {
+    try {
+      const response = await axios.get(`${API_URL}/auth/get-profile`, {
+        withCredentials:true,
+      });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'An error occurred while fetching current user' }; 
+      
+    }
   },
 
   updateProfile: async (userData) => {
@@ -58,9 +65,9 @@ export const authService = {
     }
   },
 
-  getProfile: async () => {
+  getProfile: async (username) => {
     try {
-      const response = await axios.get(`${API_URL}/auth/get-profile`,{
+      const response = await axios.get(`${API_URL}/auth/get-user/${username}`,{
         withCredentials:true,
       });
       return response.data;
