@@ -17,7 +17,7 @@ export function middleware(request) {
 
   // If authenticated and trying to access login/signup page
   if (isAuthenticated && commonRoutes.includes(currentPath)) {
-    return NextResponse.redirect(new URL('/main/create-post', request.url))
+    return NextResponse.redirect(new URL('/main', request.url))
   }
 
   return NextResponse.next()
@@ -26,5 +26,5 @@ export function middleware(request) {
  
 // See "Matching Paths" below to learn more
 export const config = {
-  matcher: ['/', '/auth/login', '/auth/signup', '/home','/main/create-post/:path*','/main'],
+  matcher: ['/', '/auth/login', '/auth/signup', '/home','/main/:path*','/main'],
 }
