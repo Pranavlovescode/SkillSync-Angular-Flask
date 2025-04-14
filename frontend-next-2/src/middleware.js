@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server'
 export function middleware(request) {
   console.log(">> Middleware triggered")
   
-  const token = request.cookies.get('session')?.value
+  const token = request.cookies.get('SkillSyncSession')?.value
   console.log("Session token:", token)
   const isAuthenticated = !!token
 
