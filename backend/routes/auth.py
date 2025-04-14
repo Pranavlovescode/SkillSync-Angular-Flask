@@ -59,7 +59,7 @@ def login():
     return response
 
 
-@auth.route('/logout',methods=["POST","GET"])
+@auth.route('/logout',methods=["POST"])
 def logout():
     if session.get('user'):
         session.clear()
