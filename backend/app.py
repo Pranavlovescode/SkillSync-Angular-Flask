@@ -42,6 +42,10 @@ app.config["SESSION_MONGODB_COLLECTION"] = "sessions"
 app.config["SESSION_COOKIE_HTTPONLY"] = True
 app.config["SESSION_COOKIE_SAMESITE"] = "None"  # For cross-site requests
 app.config["SESSION_COOKIE_SECURE"] = True     # Required when SameSite is "None"
+app.config["SESSION_COOKIE_NAME"] = "SkillSyncSession"  # Custom session cookie name
+app.config["SESSION_COOKIE_PATH"] = "/"
+app.config["SESSION_COOKIE_DOMAIN"] = '.pranavtitambe.in'  # Set to your domain
+
 
 # Session lifetime
 app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=7)
