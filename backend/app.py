@@ -28,7 +28,7 @@ app.config.from_object(Config)
 # Set custom JSON encoder for the app
 app.json_encoder = MongoJSONEncoder
 
-CORS(app,supports_credentials=True,origins=[os.getenv('ORIGIN'),os.getenv('DEV_ORIGIN')])
+CORS(app,supports_credentials=True,origins=[os.getenv('ORIGIN')])
 
 # For development environment
 app.config["SESSION_TYPE"] = "mongodb"
