@@ -29,6 +29,9 @@ export default function HomePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [activeTab, setActiveTab] = useState("all");
+  const [expandedPosts, setExpandedPosts] = useState({});
+  const [likeInProgress, setLikeInProgress] = useState({});
+  const [likeAnimation, setLikeAnimation] = useState({});
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -53,12 +56,35 @@ export default function HomePage() {
 
   const handleLike = async (postId) => {
     try {
-      const response = await skillPostService.likePost(postId);
+      setLikeInProgress((prev) => ({ ...prev, [postId]: true }));
 
-      // Update the posts state with the updated post
+      setPosts((prevPosts) =>
+        prevPosts.map((post) => {
+          if (post._id.$oid === postId) {
+            const isCurrentlyLiked = post.liked_by_user;
+            return {
+              ...post,
+              liked_by_user: !isCurrentlyLiked,
+              likes: isCurrentlyLiked
+                ? Math.max(0, (post.likes || 1) - 1)
+                : (post.likes || 0) + 1,
+            };
+          }
+          return post;
+        })
+      );
+
+      setLikeAnimation((prev) => ({ ...prev, [postId]: true }));
+      setTimeout(() => {
+        setLikeAnimation((prev) => ({ ...prev, [postId]: false }));
+      }, 1000);
+
+      const response = await skillPostService.likePost(postId);
+      console.log("Like response", response);
+
       setPosts((prevPosts) =>
         prevPosts.map((post) =>
-          post.id === postId
+          post._id.$oid === postId
             ? {
                 ...post,
                 likes: response.likes,
@@ -69,11 +95,33 @@ export default function HomePage() {
       );
     } catch (err) {
       console.error("Error liking post:", err);
+      setPosts((prevPosts) =>
+        prevPosts.map((post) => {
+          if (post._id.$oid === postId) {
+            const isCurrentlyLiked = post.liked_by_user;
+            return {
+              ...post,
+              liked_by_user: !isCurrentlyLiked,
+              likes: isCurrentlyLiked
+                ? (post.likes || 0) + 1
+                : Math.max(0, (post.likes || 1) - 1),
+            };
+          }
+          return post;
+        })
+      );
+    } finally {
+      setLikeInProgress((prev) => ({ ...prev, [postId]: false }));
     }
   };
 
-  // Function to format post date
-  // Function to format post date with better error handling
+  const toggleReadMore = (postId) => {
+    setExpandedPosts((prev) => ({
+      ...prev,
+      [postId]: !prev[postId],
+    }));
+  };
+
   const formatDate = (dateString) => {
     if (!dateString) return "";
 
@@ -199,7 +247,9 @@ export default function HomePage() {
                             <AvatarImage
                               src={
                                 post.user?.profile_picture ||
-                                "https://ui.shadcn.com/placeholder.svg"
+                                `${post.user?.first_name?.charAt(0) || ""}${
+                                  post.user?.last_name?.charAt(0) || ""
+                                }`
                               }
                               alt={post?.user?.username || "User"}
                             />
@@ -237,14 +287,40 @@ export default function HomePage() {
                     </CardHeader>
 
                     <CardContent className="pb-4">
-                      <Link href={`/main/posts/${post.id}`}>
+                      <Link href={`/main/posts/${post._id.$oid}`}>
                         <h3 className="text-lg font-bold mb-2 hover:text-primary transition-colors">
                           {post.title}
                         </h3>
                       </Link>
-                      <p className="text-muted-foreground">
-                        {post.content || post.description}
-                      </p>
+
+                      {(() => {
+                        const content = post.content || post.description || "";
+                        const maxLength = 100;
+                        const needsReadMore = content.length > maxLength;
+                        const isExpanded = expandedPosts[post._id?.$oid];
+
+                        return (
+                          <div className="text-muted-foreground">
+                            <p>
+                              {needsReadMore && !isExpanded
+                                ? `${content.substring(0, maxLength)}...`
+                                : content}
+                            </p>
+
+                            {needsReadMore && (
+                              <button
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  toggleReadMore(post._id?.$oid);
+                                }}
+                                className="text-primary hover:text-purple-500 hover:cursor-pointer text-sm mt-1 font-medium"
+                              >
+                                {isExpanded ? "Show less" : "Read more"}
+                              </button>
+                            )}
+                          </div>
+                        );
+                      })()}
 
                       {post.tags && post.tags.length > 0 && (
                         <div className="flex flex-wrap gap-2 mt-4">
@@ -260,23 +336,19 @@ export default function HomePage() {
                         </div>
                       )}
 
-                      {post.image_url && (
+                      {post.image && (
                         <div className="mt-4 rounded-md overflow-hidden">
                           <img
-                            src={post.image_url}
+                            src={post.image}
                             alt={post.title}
                             className="w-full object-cover hover:scale-[1.02] transition-transform"
                           />
                         </div>
                       )}
 
-                      {post.video_url && !post.image_url && (
+                      {post.video && !post.image && (
                         <div className="mt-4 rounded-md overflow-hidden">
-                          <video
-                            src={post.video_url}
-                            className="w-full"
-                            controls
-                          >
+                          <video src={post.video} className="w-full" controls>
                             Your browser does not support the video tag.
                           </video>
                         </div>
@@ -291,33 +363,31 @@ export default function HomePage() {
                           <Button
                             variant="ghost"
                             size="sm"
-                            className={`gap-2 ${
-                              post.liked_by_user ? "text-rose-500" : ""
-                            }`}
-                            onClick={() => handleLike(post.id)}
+                            className={`gap-2 relative overflow-visible`}
+                            onClick={() =>                              
+                              handleLike(post._id.$oid)
+                            }
+                            // disabled={likeInProgress[post._id.$oid]}
                           >
+                          
                             {post.liked_by_user ? (
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="20"
-                                height="20"
-                                viewBox="0 0 24 24"
-                                fill="currentColor"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                className="lucide lucide-heart"
-                              >
-                                <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
-                              </svg>
+                              <Heart
+                                size={20}
+                                className={'text-red-500'}
+                              />
                             ) : (
-                              <Heart size={20} />
+                              <Heart
+                                size={20}                                
+                              />
                             )}
-                            {post.likes || 0}
+                            <span
+                              
+                            >
+                              {post.likes || 0}
+                            </span>
                           </Button>
 
-                          <Link href={`/main/posts/${post.id}`}>
+                          <Link href={`/main/posts/${post._id.$oid}`}>
                             <Button variant="ghost" size="sm" className="gap-2">
                               <MessageCircle size={20} />
                               {post.comments?.length || 0}

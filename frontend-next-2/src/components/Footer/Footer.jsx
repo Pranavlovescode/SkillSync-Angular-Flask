@@ -15,7 +15,7 @@ export default function Footer() {
     <>
       <footer className="w-full">
         {/* Newsletter signup section */}
-        <div className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 py-12 px-6 backdrop-blur-sm border-t border-b border-zinc-800/50">
+        <div className="bg-gradient-to-r bg-black from-blue-600/20 to-purple-600/20 py-12 px-6 backdrop-blur-sm border-t border-b border-zinc-800/50">
           <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
             <div className="max-w-md">
               <h3 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400 mb-2">

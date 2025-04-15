@@ -44,23 +44,7 @@
   --animate-accordion-down: accordion-down 0.2s ease-out;
   --animate-accordion-up: accordion-up 0.2s ease-out;
 
-  @keyframes accordion-down {
-    from {
-      height: 0;
-    }
-    to {
-      height: var(--radix-accordion-content-height);
-    }
-  }
-
-  @keyframes accordion-up {
-    from {
-      height: var(--radix-accordion-content-height);
-    }
-    to {
-      height: 0;
-    }
-  }
+  
 }
 
 :root {
@@ -138,5 +122,20 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* Add Tailwind utility classes for the animations */
+@layer utilities {
+  .animate-like-pulse {
+    animation: like-pulse 0.5s ease-in-out;
+  }
+
+  .animate-like-bounce {
+    animation: like-bounce 0.5s ease-in-out;
+  }
+
+  .animate-like-float {
+    animation: like-float 1s forwards;
   }
 }

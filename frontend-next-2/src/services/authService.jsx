@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'https://skillsync-angular-backend.pranavtitambe.in';
+const API_URL = 'https://skillsync-angular-backend.pranavtitambe.in/';
 
 export const authService = {
   login: async (email, password) => {

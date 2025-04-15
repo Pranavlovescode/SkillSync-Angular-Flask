@@ -14,7 +14,9 @@ export const skillPostService = {
 
   getPostById: async (postId) => {
     try {
-      const response = await axios.get(`${API_URL}/skillpost/${postId}`);
+      const response = await axios.get(`${API_URL}/skillpost/get-by-id/${postId}`,{
+        withCredentials:true
+      });
       return response.data;
     } catch (error) {
       throw error.response?.data || { message: 'An error occurred while fetching post' };
@@ -59,7 +61,7 @@ export const skillPostService = {
   likePost: async (postId) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.post(`${API_URL}/skillpost/${postId}/like`, {}, {
+      const response = await axios.post(`${API_URL}/skillpost/like/${postId}`, {}, {
         withCredentials:true
       });
       return response.data;
@@ -71,7 +73,7 @@ export const skillPostService = {
   addComment: async (postId, comment) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.post(`${API_URL}/skillpost/${postId}/comments`, { comment }, {
+      const response = await axios.post(`${API_URL}/skillpost/comment/${postId}`, { comment }, {
         withCredentials:true
       });
       return response.data;

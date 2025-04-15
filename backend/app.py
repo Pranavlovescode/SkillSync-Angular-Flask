@@ -28,7 +28,7 @@ app.config.from_object(Config)
 # Set custom JSON encoder for the app
 app.json_encoder = MongoJSONEncoder
 
-CORS(app,supports_credentials=True,origins=os.getenv('ORIGIN'))
+CORS(app,supports_credentials=True,origins=[os.getenv('ORIGIN'),os.getenv('DEV_ORIGIN')])
 
 # For development environment
 app.config["SESSION_TYPE"] = "mongodb"
@@ -44,7 +44,9 @@ app.config["SESSION_COOKIE_SAMESITE"] = "None"  # For cross-site requests
 app.config["SESSION_COOKIE_SECURE"] = True     # Required when SameSite is "None"
 app.config["SESSION_COOKIE_NAME"] = "SkillSyncSession"  # Custom session cookie name
 app.config["SESSION_COOKIE_PATH"] = "/"
-app.config["SESSION_COOKIE_DOMAIN"] = '.pranavtitambe.in'  # Set to your domain
+app.config["SESSION_COOKIE_DOMAIN"] = None  # None restricts to current host
+# Or for a specific domain:
+# app.config["SESSION_COOKIE_DOMAIN"] = ".pranavtitambe.in"  # Include subdomain
 
 
 # Session lifetime
@@ -63,4 +65,4 @@ def hello_world():
 
 # Run the app
 if __name__ == '__main__':        
-    app.run(debug=True)
+    app.run(debug=True,port=5001)
