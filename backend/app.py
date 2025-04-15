@@ -44,7 +44,7 @@ app.config["SESSION_COOKIE_SAMESITE"] = "None"  # For cross-site requests
 app.config["SESSION_COOKIE_SECURE"] = True     # Required when SameSite is "None"
 app.config["SESSION_COOKIE_NAME"] = "SkillSyncSession"  # Custom session cookie name
 app.config["SESSION_COOKIE_PATH"] = "/"
-app.config["SESSION_COOKIE_DOMAIN"] = None  # None restricts to current host
+app.config["SESSION_COOKIE_DOMAIN"] = '.pranavtitambe.in'  # None restricts to current host
 # Or for a specific domain:
 # app.config["SESSION_COOKIE_DOMAIN"] = ".pranavtitambe.in"  # Include subdomain
 
