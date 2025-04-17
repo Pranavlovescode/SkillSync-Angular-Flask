@@ -11,6 +11,8 @@ from flask_session import Session
 from db import mongo_client as client
 from datetime import timedelta
 from bson import ObjectId
+from flask_mail import Mail, Message
+
 
 # Custom JSON encoder to handle MongoDB ObjectId
 class MongoJSONEncoder(json.JSONEncoder):
@@ -45,12 +47,25 @@ app.config["SESSION_COOKIE_SECURE"] = True     # Required when SameSite is "None
 app.config["SESSION_COOKIE_NAME"] = "SkillSyncSession"  # Custom session cookie name
 app.config["SESSION_COOKIE_PATH"] = "/"
 app.config["SESSION_COOKIE_DOMAIN"] = '.pranavtitambe.in'  # None restricts to current host
+# app.config["SESSION_COOKIE_DOMAIN"] = None  # None restricts to current host
 # Or for a specific domain:
 # app.config["SESSION_COOKIE_DOMAIN"] = ".pranavtitambe.in"  # Include subdomain
 
 
 # Session lifetime
 app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=7)
+
+
+
+# Sendgrid configuration
+app.config['MAIL_SERVER'] = 'smtp.sendgrid.net'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = 'apikey'
+app.config['MAIL_PASSWORD'] = os.environ.get('SENDGRID_API_KEY')
+app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_DEFAULT_SENDER')
+
+mail = Mail(app)
 
 Session(app)
 

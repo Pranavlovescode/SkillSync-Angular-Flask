@@ -1,6 +1,8 @@
 import axios from 'axios';
 
 const API_URL = 'https://skillsync-angular-backend.pranavtitambe.in/';
+// const API_URL = 'http://localhost:5001';
+
 
 export const authService = {
   login: async (email, password) => {
@@ -74,5 +76,24 @@ export const authService = {
     } catch (error) {
       throw error.response?.data || { message: 'An error occurred while fetching profile' };
     }
-  }
+  },
+
+  verifyEmail: async (token) => {
+    try {
+      const response = await axios.get(`${API_URL}/auth/verify-email/${token}`,{
+        withCredentials:true,
+      });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'An error occurred during email verification' };
+    }
+  },
+  resendVerification: async () => {
+    try {
+      const response = await axios.post(`${API_URL}/auth/resend-verification`, {},{withCredentials:true});
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'An error occurred while resending verification email' };
+    }
+  },
 };

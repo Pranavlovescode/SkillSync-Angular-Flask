@@ -7,6 +7,10 @@ from bson.json_util import dumps
 import cloudinary.uploader
 import cloudinary
 import os,datetime
+from itsdangerous import URLSafeTimedSerializer  # For generating signed tokens
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 # Cloudinary Configuration
 cloudinary.config(
@@ -18,6 +22,72 @@ cloudinary.config(
 
 auth = Blueprint('auth', __name__)
 
+# Add these below your cloudinary configuration
+# Token serializer for email verification
+serializer = URLSafeTimedSerializer(os.getenv('SECRET_KEY', 'your-secret-key'))
+
+# Email configuration
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_PORT = 587
+EMAIL_USERNAME = 'apikey'
+EMAIL_PASSWORD = os.environ.get('SENDGRID_API_KEY')
+EMAIL_SENDER = os.environ.get('MAIL_DEFAULT_SENDER')
+FRONTEND_URL = os.environ.get('ORIGIN')
+
+def generate_verification_token(email):
+    """Generate a verification token for email confirmation"""
+    return serializer.dumps(email, salt='email-verification')
+
+def verify_token(token, expiration=3600):
+    """Verify the token and return the email if valid"""
+    try:
+        email = serializer.loads(token, salt='email-verification', max_age=expiration)
+        return email
+    except:
+        return None
+
+def send_verification_email(email, token):
+    """Send verification email to the user"""
+    verification_url = f"{FRONTEND_URL}/auth/verify-email/{token}"
+    
+    # Create email message
+    msg = MIMEMultipart()
+    msg['From'] = EMAIL_SENDER
+    msg['To'] = email
+    msg['Subject'] = "SkillSync - Verify Your Email Address"
+    
+    # Email body
+    body = f"""
+    <html>
+    <body>
+        <h2>Welcome to SkillSync!</h2>
+        <p>Thank you for registering. Please verify your email address by clicking the link below:</p>
+        <p><a href="{verification_url}">{verification_url}</a></p>
+        <p>This link will expire in 1 hour.</p>
+        <p>If you didn't register for SkillSync, please ignore this email.</p>
+        <p>Best regards,<br>The SkillSync Team</p>
+    </body>
+    </html>
+    """
+    
+    msg.attach(MIMEText(body, 'html'))
+    
+    try:
+        # Connect to SMTP server
+        server = smtplib.SMTP(EMAIL_HOST, EMAIL_PORT)
+        server.starttls()
+        server.login(EMAIL_USERNAME, EMAIL_PASSWORD)
+        
+        # Send email
+        server.send_message(msg)
+        server.quit()
+        return True
+    except Exception as e:
+        print(f"Failed to send verification email: {str(e)}")
+        return False
+
+
+
 @auth.route('/signup',methods=["POST"])
 def signup():
     data = request.get_json()
@@ -26,7 +96,7 @@ def signup():
     if user:
         return make_response(jsonify({"message":"User already exists"}),400)
     
-    
+    token = generate_verification_token(data['email'])
 
     hashed_password = generate_password_hash(data['password'])
     user = user_collection.insert_one({
@@ -39,10 +109,134 @@ def signup():
         "profile_picture":"",
         "bio":"",
         "joined_on":datetime.datetime.now(),
+        "verification_token":token,
     })
-    session['user'] = data['email']
-    print(session['user'])
-    return make_response(jsonify({"message":"User created successfully"}),201)
+
+    email_sent = send_verification_email(data['email'], token)
+
+    if email_sent:
+            session['user'] = data['email']
+            session['email_verified'] = False
+            return make_response(jsonify({
+                "message": "User created successfully. Please verify your email.",
+                "email_verified": False
+            }), 201)
+    else:
+            return make_response(jsonify({
+                "message": "User created successfully but verification email could not be sent. Please try again later.",
+                "email_verified": False
+            }), 201)
+
+
+
+@auth.route('/resend-verification', methods=["POST"])
+def resend_verification():
+    if not session.get('user'):
+        return make_response(jsonify({"message":"User not logged in"}), 401)
+    
+    email = session['user']
+    user = user_collection.find_one({"email": email})
+    
+    if not user:
+        return make_response(jsonify({"message":"User not found"}), 404)
+    
+    if user["is_email_verified"]:
+        return make_response(jsonify({"message":"Email already verified"}), 400)
+    
+    # Generate new verification token
+    token = generate_verification_token(email)
+    
+    # Update user with new token
+    user_collection.update_one(
+        {"email": email},
+        {"$set": {
+            "verification_token": token,
+            "token_created_at": datetime.datetime.now()
+        }}
+    )
+    
+    # Send verification email
+    email_sent = send_verification_email(email, token)
+    
+    if email_sent:
+        return make_response(jsonify({"message":"Verification email sent successfully"}), 200)
+    else:
+        return make_response(jsonify({"message":"Failed to send verification email"}), 500)
+
+
+
+
+# Email verification route
+@auth.route('/verify-email/<token>', methods=["GET"])
+def verify_email(token):
+    email = verify_token(token)
+    
+    if not email:
+        return make_response(jsonify({
+            "message": "Invalid or expired verification link",
+            "verified": False
+        }), 400)
+    
+    # Find user and verify email
+    user = user_collection.find_one({"email": email})
+    
+    if not user:
+        return make_response(jsonify({
+            "message": "User not found",
+            "verified": False
+        }), 404)
+    
+    if user.get("is_email_verified"):
+        return make_response(jsonify({
+            "message": "Email already verified",
+            "verified": True
+        }), 200)
+    
+    # Update user verification status
+    user_collection.update_one(
+        {"email": email},
+        {"$set": {
+            "is_email_verified": True,
+            "verification_token": None,
+        }}
+    )
+    
+    # Update session if active
+    if session.get('user') == email:
+        session['email_verified'] = True
+    
+    return make_response(jsonify({
+        "message": "Email verified successfully",
+        "verified": True
+    }), 200)
+
+
+
+# Check email verification status
+@auth.route('/verification-status', methods=["GET"])
+def verification_status():
+    if not session.get('user'):
+        return make_response(jsonify({
+            "message": "User not logged in",
+            "email_verified": False,
+            "authenticated": False
+        }), 401)
+    
+    user = user_collection.find_one({"email": session['user']})
+    
+    if not user:
+        return make_response(jsonify({
+            "message": "User not found",
+            "email_verified": False,
+            "authenticated": False
+        }), 404)
+    
+    return make_response(jsonify({
+        "message": "Verification status retrieved",
+        "email_verified": user.get("is_email_verified", False),
+        "authenticated": True
+    }), 200)
+
 
 
 @auth.route('/login',methods=["POST","GET"])

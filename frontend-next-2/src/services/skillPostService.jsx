@@ -1,6 +1,8 @@
 import axios from 'axios';
 
 const API_URL = 'https://skillsync-angular-backend.pranavtitambe.in';
+// const API_URL = 'http://localhost:5001';
+
 
 export const skillPostService = {
   getAllPosts: async () => {
