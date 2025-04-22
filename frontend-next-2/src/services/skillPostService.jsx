@@ -88,7 +88,7 @@ export const skillPostService = {
     try {
       const token = localStorage.getItem('token');
       const response = await axios.post(
-        `${API_URL}/skillpost/${postId}/comments`, 
+        `${API_URL}/skillpost/comment/${postId}`, 
         { 
           comment: replyText,
           parent_id: commentId 
